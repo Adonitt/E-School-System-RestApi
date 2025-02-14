@@ -27,5 +27,5 @@ public class AdminEntity extends UserBaseInfo {
 
     @Column(name = "active", nullable = false)
     private boolean active;
- 
+
 }
