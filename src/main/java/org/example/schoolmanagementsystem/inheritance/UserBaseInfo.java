@@ -6,18 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.schoolmanagementsystem.enums.CitiesEnum;
+import org.example.schoolmanagementsystem.enums.CountryEnum;
 import org.example.schoolmanagementsystem.enums.GenderEnum;
 import org.example.schoolmanagementsystem.enums.RoleEnum;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+
 @MappedSuperclass
-public class UserBaseInfo {
+public abstract class UserBaseInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,10 +43,12 @@ public class UserBaseInfo {
     private String address;
 
     @Column(name = "city", length = 100, nullable = false)
+    @Enumerated(EnumType.STRING)
     private CitiesEnum city;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "country", length = 100)
-    private String country;
+    private CountryEnum country;
 
     @Column(name = "postal_code", length = 20)
     private String postalCode;
@@ -70,7 +72,7 @@ public class UserBaseInfo {
     @Column(name = "created_by", length = 100)
     private String createdBy;
 
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @Column(name = "modified_by", length = 100)

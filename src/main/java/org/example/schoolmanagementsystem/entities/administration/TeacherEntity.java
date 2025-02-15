@@ -23,7 +23,7 @@ import java.util.List;
 public class TeacherEntity extends UserBaseInfo {
 
     @Column(name = "teacher_id", unique = true, nullable = false)
-    private String teacherId;
+    private Long id;
 
     @Column(name = "specialization", nullable = false, length = 100)
     private String specialization;
@@ -31,8 +31,8 @@ public class TeacherEntity extends UserBaseInfo {
     @Column(name = "years_of_experience", nullable = false)
     private int yearsOfExperience;
 
-    @Column(name = "salary", precision = 10, scale = 2)
-    private BigDecimal salary;
+    @Column(name = "salary")
+    private double salary;
 
     @Column(name = "employment_date", nullable = false)
     private LocalDate employmentDate;

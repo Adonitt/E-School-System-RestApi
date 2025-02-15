@@ -1,11 +1,127 @@
 <html lang="en"
-      th:replace="~{shared/admin_layout::layout('Administrators', '', ~{::div#container}, '', ~{::ol.breadcrumb})}">
+      th:replace="~{shared/admin_layout::layout('Administrators', '', ~{::div#container}, ~{::script}, ~{::ol.breadcrumb})}">
 
 <ol class="breadcrumb">
-    <li class="breadcrumb-item">Administrators</li>
+    <li class="breadcrumb-item">Administrators List</li>
 </ol>
 
 <div id="container">
+    <a th:href="@{/administration/administrators/create}">
+        <button type="button" class="btn btn-outline-primary">Create a new Administrator</button>
+    </a>
+
+    <!-- Search Filters -->
+    <div class="row g-3 mt-3">
+        <div class="col-md-3">
+            <input type="text" class="form-control" id="searchAdminNumber" placeholder="Search by Admin Number">
+        </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control" id="searchName" placeholder="Search by Name">
+        </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control" id="searchEmail" placeholder="Search by Email">
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+        </div>
+    </div>
+    <!-- End Search Filters -->
+
+    <div class="alert alert-info alert-dismissible fade show" role="alert"
+         th:unless="${admins!=null && admins.size()>0}">
+        <i class="fas fa-exclamation-circle"></i>
+        <strong>There are no admins in the list</strong>
+    </div>
+
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${adminMsg!=null}">
+        <i class="fas fa-check"></i>
+        <strong th:text="${adminMsg}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card mt-3" th:if="${admins != null && admins.size() >0}">
+        <div class="card-body">
+            <h5 class="card-title">Administrators List </h5>
+
+            <table class="table table-striped" id="adminTable">
+                <thead>
+                <tr>
+                    <th scope="col">Admin Number</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="admin:${admins}" th:object="${admin}">
+                    <td class="admin-number" th:text="*{adminNumber}">1</td>
+                    <td class="admin-name" th:text="*{name + ' ' + surname}">Brandon Jacob</td>
+                    <td class="admin-department" th:text="*{department}">Designer</td>
+                    <td class="admin-email" th:text="*{email}">brandon@example.com</td>
+                    <td>
+                        <a th:href="@{/administration/administrators/{id}/details(id=*{id})}">
+                            <button type="button" class="btn btn-icon btn-round btn-info">
+                                <i class="bi bi-info-circle"></i>
+                            </button>
+                        </a>
+                        <button type="button" class="btn btn-icon btn-round btn-warning">
+                            <i class="bi bi-pen"></i>
+                        </button>
+                        <button type="button" class="btn btn-icon btn-round btn-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
 </div>
 
+<!-- JavaScript for Filtering -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const adminNumberInput = document.getElementById("searchAdminNumber");
+        const nameInput = document.getElementById("searchName");
+        const emailInput = document.getElementById("searchEmail");
+        const tableRows = document.querySelectorAll("#adminTable tbody tr");
+
+        function filterTable() {
+            const adminNumberValue = adminNumberInput.value.toLowerCase();
+            const nameValue = nameInput.value.toLowerCase();
+            const emailValue = emailInput.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const adminNumber = row.querySelector(".admin-number").textContent.toLowerCase();
+                const name = row.querySelector(".admin-name").textContent.toLowerCase();
+                const email = row.querySelector(".admin-email").textContent.toLowerCase();
+
+                if (
+                    adminNumber.includes(adminNumberValue) &&
+                    name.includes(nameValue) &&
+                    email.includes(emailValue)
+                ) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        function clearFilters() {
+            adminNumberInput.value = "";
+            nameInput.value = "";
+            emailInput.value = "";
+            filterTable();
+        }
+
+        adminNumberInput.addEventListener("input", filterTable);
+        nameInput.addEventListener("input", filterTable);
+        emailInput.addEventListener("input", filterTable);
+
+        window.clearFilters = clearFilters;
+    });
+</script>
 </html>

@@ -40,13 +40,11 @@
         <div class="col-xl-4">
             <div class="card shadow-sm">
                 <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                    <img th:src="${session.admin.photo}" alt="Profile" class="rounded-circle border" height="130"
-                         width="130">
-                    <h2 class="mt-3 text-primary" th:text="${session.admin.name + ' ' + session.admin.surname}">Kevin
-                        Anderson</h2>
-                    <h5 class="text-muted" th:text="${session.admin.department}">Web Designer</h5>
-                    <span class="badge bg-success mt-2" th:if="${session.admin.active}">Active</span>
-                    <span class="badge bg-danger mt-2" th:unless="${session.admin.active}">Inactive</span>
+                    <img th:src="*{photo}" alt="Profile" class="rounded-circle border" height="130" width="130">
+                    <h2 class="mt-3 text-primary" th:text="*{name + ' ' + surname}">Kevin Anderson</h2>
+                    <h5 class="text-muted" th:text="*{department}">Web Designer</h5>
+                    <span class="badge bg-success mt-2" th:if="*{active}">Active</span>
+                    <span class="badge bg-danger mt-2" th:unless="*{active}">Inactive</span>
                 </div>
             </div>
         </div>
@@ -59,74 +57,97 @@
 
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">ID:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.id}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{id}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Personal Number:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.personalNumber}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{personalNumber}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Admin Number:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.adminNumber}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{adminNumber}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Full Name:</div>
-                        <div class="col-md-8 text-muted"
-                             th:text="${session.admin.name + ' ' +session.admin.surname}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{name + ' ' + surname}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Gender:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.gender}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{gender}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Birth Date:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.birthDate}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{birthDate}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Address:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.address}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{address}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">City:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.city}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{city}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Country:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.country}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{country}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Postal Code:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.postalCode}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{postalCode}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Phone Number:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.phoneNumber}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{phoneNumber}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Email:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.email}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{email}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Role:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.role}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{role}"></div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Department:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.department}"></div>
+                        <div class="col-md-8 text-muted" th:text="*{department}"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Notes:</div>
+                        <div class="col-md-8 text-muted" th:text="*{notes}"></div>
                     </div>
 
+                    <h5 class="card-title text-secondary border-bottom pb-2 mt-4">Audit Information</h5>
 
                     <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Created By:</div>
+                        <div class="col-md-8 text-muted" th:text="*{createdBy}"></div>
+                    </div>
+                    <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Created Date:</div>
-                        <div class="col-md-8 text-muted" th:text="${session.admin.createdDate}"></div>
+                        <div class="col-md-8 text-muted" th:text="${createdDate}"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Last Modified By:</div>
+                        <div class="col-md-8 text-muted" th:text="*{modifiedBy}"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Last Modified Date:</div>
+                        <div class="col-md-8 text-muted" th:text="*{modifiedDate}"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Deleted By:</div>
+                        <div class="col-md-8 text-muted" th:text="*{deletedBy}"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Deleted Date:</div>
+                        <div class="col-md-8 text-muted" th:text="*{deletedDate}"></div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Accept Terms:</div>
                         <div class="col-md-8 text-muted">
-                            <span class="badge bg-success"
-                                  th:if="${session.admin.acceptTermsAndConditions}">Accepted</span>
-                            <span class="badge bg-danger" th:unless="${session.admin.acceptTermsAndConditions}">Not Accepted</span>
+                            <span class="badge bg-success" th:if="*{acceptTermsAndConditions}">Accepted</span>
+                            <span class="badge bg-danger" th:unless="*{acceptTermsAndConditions}">Not Accepted</span>
                         </div>
                     </div>
 

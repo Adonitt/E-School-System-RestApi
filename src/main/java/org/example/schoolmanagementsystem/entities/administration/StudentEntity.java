@@ -24,7 +24,7 @@ import java.util.List;
 public class StudentEntity extends UserBaseInfo {
 
     @Column(name = "student_id", unique = true)
-    private String studentId;  // Unique school-assigned number
+    private Long id;  // Unique school-assigned number
 
     @Column(name = "registered_date")
     private LocalDate registeredDate;  // Date the student joined
@@ -33,8 +33,6 @@ public class StudentEntity extends UserBaseInfo {
     @Column(name = "grade")
     private GradeEnum grade;  // E.g., "10A", "12B"
 
-    @Column(name = "section", length = 10)
-    private String section;  // Class section (e.g., "A", "B")
 
     @Column(name = "academic_year")
     private String academicYear;  // E.g., "2024-2025"

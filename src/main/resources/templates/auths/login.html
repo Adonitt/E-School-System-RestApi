@@ -58,27 +58,38 @@
                                     <p class="text-center small">Enter your email & password to login</p>
                                 </div>
 
-                                <form class="row g-3 needs-validation" method="post">
+                                <p th:if="${loginErrorMsg != null}" class="alert alert-danger">
+                                    <strong th:text="${loginErrorMsg}"></strong>
+                                </p>
+                                <p th:if="${resetSuccess != null}" class="alert alert-success">
+                                    <strong th:text="${resetSuccess}"></strong>
+                                </p>
+                                <form class="row g-3 needs-validation" method="post" th:object="${loginDto}">
 
                                     <div class="col-12">
                                         <label for="email" class="form-label">Email</label>
                                         <div class="input-group has-validation">
-                                            <input type="email" class="form-control" placeholder="Enter your email"
+                                            <input th:field="*{email}" type="email" class="form-control"
+                                                   placeholder="Enter your email"
                                                    required>
                                             <div>
-                                                <!--                                                <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>-->
+                                                <span class="text-danger" th:if="${#fields.hasErrors('email')}"
+                                                      th:errors="*{email}"></span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="col-12">
                                         <label for="password" class="form-label">Password</label>
-                                        <input type="password" class="form-control" placeholder="Enter your password"
+                                        <input type="password" th:field="*{password}" class="form-control"
+                                               placeholder="Enter your password"
                                                required>
                                         <div>
-                                            <!--                                            <span class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>-->
+                                            <span class="text-danger" th:if="${#fields.hasErrors('password')}"
+                                                  th:errors="*{password}"></span>
                                         </div>
                                     </div>
+                                    <a th:href="@{/forgot-password}">Forgot Password</a>
 
                                     <div class="col-12">
                                         <div class="form-check">
@@ -88,7 +99,7 @@
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <a th:href="@{/dashboard}" class="btn btn-primary w-100" type="submit">Login</a>
+                                        <button class="btn btn-primary w-100" type="submit">Login</button>
                                     </div>
                                 </form>
 
