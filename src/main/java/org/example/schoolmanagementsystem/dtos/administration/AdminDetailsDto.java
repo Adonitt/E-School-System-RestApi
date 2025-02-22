@@ -50,9 +50,7 @@ public class AdminDetailsDto {
 
     private LocalDateTime modifiedDate;
 
-    private String deletedBy;
 
-    private LocalDateTime deletedDate;
 
     public Long adminNumber;
 

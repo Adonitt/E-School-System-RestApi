@@ -30,6 +30,8 @@
     <link href="/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
     <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
     <link href="/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="/https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
 
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet">
@@ -68,7 +70,7 @@
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                     <img th:src="${session.admin.photo}" alt="Profile" class="rounded-circle">
                     <span class="d-none d-md-block dropdown-toggle ps-2">
-                    <span th:text="${session.admin.name.substring(0,1)+' .'+ session.admin.surname}"></span>
+                    <span th:text="${session.admin.name+' '+ session.admin.surname}"></span>
                     </span>
                 </a><!-- End Profile Iamge Icon -->
 
@@ -91,10 +93,11 @@
                         <hr class="dropdown-divider">
                     </li>
 
+
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-gear"></i>
-                            <span>Account Settings</span>
+                        <a class="dropdown-item d-flex align-items-center" th:href="@{profile/change-password}">
+                            <i class="ri-lock-password-fill"></i>
+                            <span>Change Password</span>
                         </a>
                     </li>
                     <li>
@@ -216,6 +219,7 @@
                 <i class="bi bi-file-person"></i><span>My Profile</span>
             </a>
         </li>
+
     </ul>
 
 </aside><!-- End Sidebar-->
@@ -243,15 +247,15 @@
 
 <!-- ======= Footer ======= -->
 <footer id="footer" class="footer">
+
+    <div th:if="${session.size()>0 && session.get('admin')!=null}" class="credits">
+        <i th:text="${session.admin.name + ' ' + session.admin.surname}"></i><br>
+        <i th:text="${session.admin.email}"></i><br>
+        <b th:text="${session.admin.role}"></b>
+    </div><br>
     <div class="copyright">
         &copy; Copyright <strong><span>School Management System</span></strong>.<br> All Rights Reserved
     </div>
-    <div class="credits">
-    </div>
-    <!--    <div th:if="${session.size()>0 && session.get('user')!=null}" class="credits">-->
-    <!--        <i th:text="${session.user.email}"></i>-->
-    <!--        <b th:text="${session.role}"></b>-->
-    <!--    </div>-->
 </footer><!-- End Footer <x></x>
 
 
@@ -267,6 +271,7 @@
 <script src="/assets/vendor/simple-datatables/simple-datatables.js"></script>
 <script src="/assets/vendor/tinymce/tinymce.min.js"></script>
 <script src="/assets/vendor/php-email-form/validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Template Main JS File -->
 <script src="/assets/js/main.js"></script>

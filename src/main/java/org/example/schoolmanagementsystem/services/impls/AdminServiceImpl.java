@@ -47,4 +47,40 @@ public class AdminServiceImpl implements AdminService {
         return mapper.toAdminDetailsDto(exists.get());
     }
 
+    @Override
+    public void modify(Long id, AdminDto dto) {
+
+        AdminEntity admin = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Admin with id " + id + " does not exist"));
+
+        if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
+            admin.setPhoto(dto.getPhoto());
+        }
+
+        admin.setPersonalNumber(dto.getPersonalNumber());
+        admin.setName(dto.getName());
+        admin.setSurname(dto.getSurname());
+        admin.setGender(dto.getGender());
+        admin.setBirthDate(dto.getBirthDate());
+        admin.setPhoneNumber(dto.getPhoneNumber());
+        admin.setCity(dto.getCity());
+        admin.setCountry(dto.getCountry());
+        admin.setPostalCode(dto.getPostalCode());
+        admin.setEmail(dto.getEmail());
+        admin.setDepartment(dto.getDepartment());
+        admin.setNotes(dto.getNotes());
+        admin.setModifiedBy(dto.getModifiedBy());
+        admin.setModifiedDate(dto.getModifiedDate());
+
+        repository.save(admin);
+    }
+
+    @Override
+    public void removeById(Long id) {
+        var existing = repository.findById(id);
+        if (existing.isEmpty()) {
+            throw new EntityNotFoundException("Admin with id " + id + " does not exist");
+        }
+        repository.deleteById(id);
+    }
 }

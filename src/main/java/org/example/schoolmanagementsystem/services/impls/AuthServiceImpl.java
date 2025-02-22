@@ -56,4 +56,11 @@ public class AuthServiceImpl implements AuthService {
         }
         return false;
     }
+
+    @Override
+    public void changePassword(Long adminId, String password) {
+        AdminEntity admin = adminRepository.findById(adminId).orElseThrow(() -> new EntityNotFoundException("Admin with id " + adminId + " does not exist"));
+        admin.setPassword(passwordEncoder.encode(password));
+        adminRepository.save(admin);
+    }
 }

@@ -1,0 +1,176 @@
+<html lang="en"
+      th:replace="~{shared/admin_layout::layout('Edit Admin', '', ~{::div#container}, ~{::script#script}, ~{::ol.breadcrumb})}">
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a th:href="@{/administration/administrators}">Administrators List</a></li>
+    <li class="breadcrumb-item active">Edit Administrator</li>
+</ol>
+
+<div id="container">
+    <div class="card">
+        <div class="card-body" th:object="${adminDto}">
+            <h5 class="card-title">Edit School Administrator - Admin Number: <span th:text="*{adminNumber}"></span></h5>
+
+            <form class="row g-4 p-4  rounded " method="post" enctype="multipart/form-data">
+                <div class="col-12 text-center">
+                    <img class="rounded-circle mt-3 border border-primary"
+                         height="150px"
+                         width="150px"
+                         th:src="*{photo}">
+                    <p class="mt-2">Choose profile photo </p>
+                    <input type="hidden" th:field="*{photo}">
+                    <input type="file" class="form-control w-50 mx-auto" id="photoFile" name="photoFile"
+                           accept="image/*">
+                </div>
+
+                <div class="col-md-4">
+                    <label for="personalNumber" class="form-label">Personal Number</label>
+                    <input type="text" class="form-control" id="personalNumber" th:field="*{personalNumber}" required
+                           minlength="10" maxlength="10">
+                    <p class="text-danger" th:if="${#fields.hasErrors('personalNumber')}"
+                       th:errors="*{personalNumber}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" required minlength="1"
+                           maxlength="50">
+                    <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="surname" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="surname" th:field="*{surname}" required minlength="1"
+                           maxlength="50">
+                    <p class="text-danger" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select class="form-select" id="gender" th:field="*{gender}" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option th:each="g : ${genders}" th:value="${g}" th:text="${g}"></option>
+                    </select>
+                    <p class="text-danger" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="birthDate" class="form-label">Birth Date</label>
+                    <input type="date" class="form-control" id="birthDate" th:field="*{birthDate}" required>
+                    <p class="text-danger" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" required
+                           minlength="6" maxlength="20">
+                    <p class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" th:field="*{address}" required minlength="5"
+                           maxlength="50">
+                    <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="country" class="form-label">Country</label>
+                    <select class="form-select" id="country" th:field="*{country}" required onchange="filterCities()">
+                        <option value="" disabled selected>Select Country</option>
+                        <option th:each="c : ${countries}" th:value="${c}" th:text="${c}"></option>
+                    </select>
+                    <p class="text-danger" th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="city" class="form-label">City</label>
+                    <select class="form-select" id="city" th:field="*{city}" required>
+                        <option value="" disabled selected>Select City</option>
+                        <option th:each="city : ${cities}" th:value="${city}" th:text="${city}"></option>
+                    </select>
+                    <p class="text-danger" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="postalCode" class="form-label">Postal Code</label>
+                    <input type="text" class="form-control" id="postalCode" th:field="*{postalCode}" required
+                           minlength="5" maxlength="5">
+                    <p class="text-danger" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" th:field="*{email}" required minlength="5"
+                           maxlength="50">
+                    <p class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="department" class="form-label">Department</label>
+                    <select class="form-select" id="department" th:field="*{department}" required>
+                        <option value="" disabled selected>Select Department</option>
+                        <option th:each="d : ${departments}" th:value="${d}" th:text="${d}"></option>
+                    </select>
+                    <p class="text-danger" th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></p>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="notes" class="form-label">Notes</label>
+                    <textarea class="form-control" id="notes" th:field="*{notes}" rows="2"></textarea>
+                    <p class="text-danger" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}"></p>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="termsCheck"
+                               th:field="*{acceptTermsAndConditions}" required>
+                        <label class="form-check-label" for="termsCheck">Agree to terms and conditions</label>
+                        <div class="text-danger" th:if="${#fields.hasErrors('acceptTermsAndConditions')}"
+                             th:errors="*{acceptTermsAndConditions}"></div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 text-center mt-3">
+                    <button class="btn btn-primary btn-lg px-5" type="submit">Edit User</button>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+<script id="script">
+    function filterCities() {
+        var country = document.getElementById("country").value;
+        var cityDropdown = document.getElementById("city");
+
+        var kosovoCities = ["PRISHTINE", "BESIANE", "FUSHEKOSOVE", "FERIZAJ", "MITROVICE", "VUSHTRRI", "PEJE", "PRIZREN"];
+        var albaniaCities = ["TIRANA", "DURRES", "SHKODER", "VLORA", "ELBASAN"];
+        var macedoniaCities = ["SKOPJE", "TETOVO", "KUMANOVO"];
+        var montenegroCities = ["PODGORICA", "BAR", "ULCINJ"];
+
+        var cities = [];
+        if (country === "KOSOVO") {
+            cities = kosovoCities;
+        } else if (country === "ALBANIAN") {
+            cities = albaniaCities;
+        } else if (country === "NORTH_MACEDONIA") {
+            cities = macedoniaCities;
+        } else if (country === "MONTENEGRO") {
+            cities = montenegroCities;
+        }
+
+        cityDropdown.innerHTML = "<option value='' disabled selected>Select City</option>";
+        cities.forEach(city => {
+            var option = document.createElement("option");
+            option.value = city;
+            option.textContent = city;
+            cityDropdown.appendChild(option);
+        });
+    }
+
+
+</script>
+
+</html>

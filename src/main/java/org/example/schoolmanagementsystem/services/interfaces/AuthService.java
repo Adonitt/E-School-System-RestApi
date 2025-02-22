@@ -4,6 +4,8 @@ import org.example.schoolmanagementsystem.entities.administration.AdminEntity;
 
 public interface AuthService {
     Object login(String email, String password);
+
     boolean sendPasswordResetEmail(String email);
 
+    void changePassword(Long adminId, String password);
 }

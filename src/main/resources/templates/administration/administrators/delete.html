@@ -1,9 +1,9 @@
 <html lang="en"
-      th:replace="~{shared/admin_layout::layout('Administrator Details', ~{::style}, ~{::div#container}, '', ~{::ol.breadcrumb})}">
+      th:replace="~{shared/admin_layout::layout('Delele Administrator', ~{::style}, ~{::div#container}, ~{::script#script}, ~{::ol.breadcrumb})}">
 
 <ol class="breadcrumb">
     <li class="breadcrumb-item"><a th:href="@{/administration/administrators}">Administrators List</a></li>
-    <li class="breadcrumb-item active">Administrator Details</li>
+    <li class="breadcrumb-item active">Delete Administrator</li>
 </ol>
 
 <style>.card {
@@ -144,12 +144,43 @@
                     </div>
 
                     <div class="row mb-3">
-                        <a th:href="@{/administration/administrators/{id}/edit(id=*{id})}"
-                           class="col-md-4 btn btn-dark ">Edit User</a>
+                        <form id="deleteForm" th:action="@{/administration/administrators/{id}/delete(id=*{id})}"
+                              method="post">
+                            <button type="submit" class="btn btn-danger">Delete this Administrator</button>
+                        </form>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+
+<script id="script">
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteForm = document.getElementById("deleteForm");
+
+        deleteForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This action cannot be undone!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteForm.submit(); // Submit the form after confirmation
+                }
+            });
+        });
+    });
+</script>
+
 
 </html>
