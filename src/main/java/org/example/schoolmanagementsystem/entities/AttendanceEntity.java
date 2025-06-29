@@ -1,10 +1,8 @@
+// AttendanceEntity.java
 package org.example.schoolmanagementsystem.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 
 import java.time.LocalDate;
@@ -23,19 +21,19 @@ public class AttendanceEntity {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
-    private StudentEntity student;  // Student who attended
+    private StudentEntity student; // StudentEntity tashmë ka @JsonIgnore për attendanceRecords.
 
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)
-    private SubjectEntity subject;
+    @ToString.Exclude
+    private SubjectEntity subject; // SubjectEntity ka @JsonBackReference tek teachers, por këtu nuk ka problem cikli.
 
     @Column(name = "date", nullable = false)
-    private LocalDate date;  // Date of attendance
+    private LocalDate date;
 
     @Column(name = "status", nullable = false, length = 10)
-    private String status;  // Present, Absent, Late
+    private String status;
 
     @Column(name = "notes", length = 255)
-    private String notes;  // Optional notes (e.g., "Medical Leave")
-
+    private String notes;
 }

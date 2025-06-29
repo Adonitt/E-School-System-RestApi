@@ -1,3 +1,4 @@
+// AdminEntity.java
 package org.example.schoolmanagementsystem.entities.administration;
 
 import jakarta.persistence.Column;
@@ -5,17 +6,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Getter; // Zëvendëson @Data
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Setter; // Zëvendëson @Data
+import lombok.experimental.SuperBuilder;
 import org.example.schoolmanagementsystem.enums.DepartmentEnum;
 import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 
-@Getter
-@Setter
+// HEQUR @Data
+@Getter // Shtuar
+@Setter // Shtuar
 @AllArgsConstructor
 @NoArgsConstructor
-
+@SuperBuilder
 @Entity(name = "admin")
 public class AdminEntity extends UserBaseInfo {
 
@@ -31,8 +34,5 @@ public class AdminEntity extends UserBaseInfo {
 
     @Column(name = "accept_terms_and_conditions", nullable = false)
     private boolean acceptTermsAndConditions;
-
-    private String photo;
-
 
 }

@@ -1,6 +1,5 @@
 package org.example.schoolmanagementsystem.dtos.teacher;
 
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -14,7 +13,6 @@ import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.enums.QualificationEnum;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,7 +20,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeacherDto extends UserDto {
+public class CreateTeacherDto extends UserDto {
     @NotNull(message = "Teacher ID is required")
     @Size(min = 7, max = 7, message = "Teacher ID must be 7 digits")
     private Long id;

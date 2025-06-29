@@ -50,8 +50,6 @@ public class AdminDetailsDto {
 
     private LocalDateTime modifiedDate;
 
-
-
     public Long adminNumber;
 
     private DepartmentEnum department;

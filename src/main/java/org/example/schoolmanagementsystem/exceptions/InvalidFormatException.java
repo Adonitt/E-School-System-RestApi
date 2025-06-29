@@ -2,12 +2,12 @@ package org.example.schoolmanagementsystem.exceptions;
 
 import jakarta.persistence.EntityExistsException;
 
-public class PersonalNumberExists extends EntityExistsException {
-    public PersonalNumberExists(String message) {
+public class InvalidFormatException extends EntityExistsException {
+    public InvalidFormatException(String message) {
         super(message);
     }
 
-    public PersonalNumberExists() {
+    public InvalidFormatException() {
         super("Personal number already exists");
     }
 }

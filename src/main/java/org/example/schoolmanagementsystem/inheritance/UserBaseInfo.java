@@ -1,10 +1,13 @@
+// UserBaseInfo.java
 package org.example.schoolmanagementsystem.inheritance;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Getter; // Zëvendëson @Data
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Setter; // Zëvendëson @Data
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.example.schoolmanagementsystem.enums.CitiesEnum;
 import org.example.schoolmanagementsystem.enums.CountryEnum;
 import org.example.schoolmanagementsystem.enums.GenderEnum;
@@ -13,10 +16,14 @@ import org.example.schoolmanagementsystem.enums.RoleEnum;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-
+// HEQUR @Data
+@Getter // Shtuar
+@Setter // Shtuar
+@AllArgsConstructor
+@NoArgsConstructor
 @MappedSuperclass
+@SuperBuilder
+@ToString(exclude = {"password", "photo"})
 public abstract class UserBaseInfo {
 
     @Id
@@ -81,10 +88,5 @@ public abstract class UserBaseInfo {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
-    @Column(name = "deleted_by", length = 100)
-    private String deletedBy;
-
-    @Column(name = "deleted_date")
-    private LocalDateTime deletedDate;
-
+    private String photo;
 }

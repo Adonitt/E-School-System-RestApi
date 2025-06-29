@@ -1,10 +1,9 @@
+// SubjectEntity.java
 package org.example.schoolmanagementsystem.entities;
 
+// import com.fasterxml.jackson.annotation.JsonBackReference; // Kjo mund të hiqet
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 
 import java.util.List;
@@ -23,15 +22,13 @@ public class SubjectEntity {
     private Long id;
 
     @Column(name = "name", nullable = false, unique = true, length = 100)
-    private String name;  // e.g., "Mathematics", "Biology"
+    private String name;
 
     @Column(name = "description", length = 255)
-    private String description;  // Optional subject description
+    private String description;
 
     @ManyToMany(mappedBy = "subjects")
-    private List<TeacherEntity> teachers; // Many-to-Many with teachers
+    @ToString.Exclude
+    private List<TeacherEntity> teachers;
 
-
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<GradeEntity> grades;  // Link to grades for this subject
 }

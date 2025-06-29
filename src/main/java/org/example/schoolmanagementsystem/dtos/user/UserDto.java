@@ -78,12 +78,6 @@ public class UserDto {
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).*$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one number", groups = OnPost.class)
     private String confirmPassword;
 
-    private String createdBy;
 
-    private LocalDateTime createdDate;
-
-    private String modifiedBy;
-
-    private LocalDateTime modifiedDate;
 
 }

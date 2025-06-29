@@ -15,4 +15,5 @@ public interface AdminMapper extends SimpleMapper<AdminEntity, AdminDto> {
     List<AdminListingDto> toListingDto(List<AdminEntity> entities);
 
     AdminDetailsDto toAdminDetailsDto(AdminEntity entity);
+
 }

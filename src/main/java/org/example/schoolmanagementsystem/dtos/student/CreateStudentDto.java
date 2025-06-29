@@ -2,53 +2,36 @@ package org.example.schoolmanagementsystem.dtos.student;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.example.schoolmanagementsystem.dtos.user.UserDto;
-import org.example.schoolmanagementsystem.entities.AttendanceEntity;
-import org.example.schoolmanagementsystem.entities.GradeEntity;
-import org.example.schoolmanagementsystem.enums.GradeEnum;
 import org.example.schoolmanagementsystem.enums.GuardianEnum;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentDto extends UserDto {
+public class CreateStudentDto extends UserDto {
 
-    @NotNull(message = "Student ID is required")
-    @NotBlank(message = "Student ID is required")
-    @Size(min = 7, max = 7, message = "Student ID must be 7 characters long")
     private Long id;  // Unique school-assigned number
 
-    @NotNull(message = "Registered date is required")
-    @NotBlank(message = "Registered date is required")
+    private String photo;
+
     @PastOrPresent(message = "Registered date must be in the past or present")
     private LocalDate registeredDate;  // Date the student joined
 
-    private GradeEnum grade;  // E.g., "10A", "12B"
-
     @NotBlank(message = "Section is required")
     @NotNull(message = "Section is required")
-    private String academicYear;  // E.g., "2024-2025"
+    @Pattern(regexp = "^[0-9]{4}-[0-9]{4}$", message = "Academic year must follow format YYYY-YYYY")
+    private String academicYear;
 
     @NotBlank(message = "Current semester is required")
     @NotNull(message = "Current semester is required")
+    @Pattern(regexp = "^(Fall|Spring|Summer)\\s20\\d{2}$", message = "Semester must be like 'Fall 2024' or 'Spring 2025'")
     private String currentSemester;  // E.g., "Fall 2024", "Spring 2025"
 
-    @Positive(message = "GPA must be a positive number")
-    private double gpa;  // Grade Point Average
-
-    @Positive(message = "Completed semesters must be a positive number")
-    private int completedSemesters;  // Number of completed semesters
-
-    private boolean graduated;  // True if the student has finished school
-
-    private boolean active;  // True if currently enrolled
+    private boolean active;
 
     @NotNull(message = "Guardian name is required")
     @NotBlank(message = "Guardian name is required")
@@ -65,15 +48,10 @@ public class StudentDto extends UserDto {
     @NotBlank(message = "Guardian email is required")
     private String guardianEmail;
 
-    private GuardianEnum relationshipToStudent;
-
     @NotNull(message = "Emergency contact name is required")
     @NotBlank(message = "Emergency contact name is required")
     private String emergencyContactPhone;
 
-    // Relationship with Attendance
-    private List<AttendanceEntity> attendanceRecords;
-
-    // Relationship with Grades
-    private List<GradeEntity> grades;
+    @NotNull(message = "Relationship to student is required")
+    private GuardianEnum relationshipToStudent;
 }

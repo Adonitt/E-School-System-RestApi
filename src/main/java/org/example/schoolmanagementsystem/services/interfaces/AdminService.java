@@ -5,9 +5,11 @@ import org.example.schoolmanagementsystem.dtos.administration.AdminDto;
 import org.example.schoolmanagementsystem.dtos.administration.AdminListingDto;
 import org.example.schoolmanagementsystem.services.base_services.*;
 
-public interface AdminService extends Addable<AdminDto>,
+public interface AdminService extends
+        Addable<AdminDto>,
         FindAll<AdminListingDto>,
         FindById<AdminDetailsDto, Long>,
-        Modifiable<AdminDto, Long>, Removable<Long> {
+        Modifiable<AdminDto, Long>,
+        Removable<Long> {
 
 }

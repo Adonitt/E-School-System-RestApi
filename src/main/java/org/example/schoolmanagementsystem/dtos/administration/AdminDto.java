@@ -9,13 +9,13 @@ import lombok.Setter;
 import org.example.schoolmanagementsystem.dtos.user.UserDto;
 import org.example.schoolmanagementsystem.enums.DepartmentEnum;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminDto extends UserDto {
-
-
     public Long adminNumber;
 
     @Enumerated
@@ -27,5 +27,13 @@ public class AdminDto extends UserDto {
     private boolean acceptTermsAndConditions;
 
     private String photo;
+
+    private String createdBy;
+
+    private LocalDateTime createdDate;
+
+    private String modifiedBy;
+
+    private LocalDateTime modifiedDate;
 
 }

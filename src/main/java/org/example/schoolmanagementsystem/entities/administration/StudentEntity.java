@@ -1,10 +1,10 @@
+// StudentEntity.java
 package org.example.schoolmanagementsystem.entities.administration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonManagedReference; // Kjo mund të hiqet nëse përdoret vetëm @JsonIgnore
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.example.schoolmanagementsystem.entities.AttendanceEntity;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.enums.GradeEnum;
@@ -12,45 +12,41 @@ import org.example.schoolmanagementsystem.enums.GuardianEnum;
 import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-
 @Entity
 @Table(name = "students")
 public class StudentEntity extends UserBaseInfo {
 
-    @Column(name = "student_id", unique = true)
-    private Long id;  // Unique school-assigned number
-
     @Column(name = "registered_date")
-    private LocalDate registeredDate;  // Date the student joined
+    private LocalDate registeredDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "grade")
-    private GradeEnum grade;  // E.g., "10A", "12B"
-
+    private GradeEnum grade;
 
     @Column(name = "academic_year")
-    private String academicYear;  // E.g., "2024-2025"
+    private String academicYear;
 
     @Column(name = "current_semester", length = 20)
-    private String currentSemester;  // E.g., "Fall 2024", "Spring 2025"
+    private String currentSemester;
 
     @Column(name = "gpa")
-    private double gpa;  // Grade Point Average
+    private double gpa;
 
     @Column(name = "completed_semesters")
-    private int completedSemesters;  // Number of completed semesters
+    private int completedSemesters;
 
     @Column(name = "graduated")
-    private boolean graduated;  // True if the student has finished school
+    private boolean graduated;
 
     @Column(name = "active")
-    private boolean active;  // True if currently enrolled
+    private boolean active;
 
     @Column(name = "guardian_name", length = 100)
     private String guardianName;
@@ -68,11 +64,16 @@ public class StudentEntity extends UserBaseInfo {
     @Column(name = "emergency_contact_phone", length = 20)
     private String emergencyContactPhone;
 
-    // Relationship with Attendance
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // Korrekt. Ndalon ciklin e serializimit.
+    @ToString.Exclude
     private List<AttendanceEntity> attendanceRecords;
 
-    // Relationship with Grades
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // Korrekt. Ndalon ciklin e serializimit.
+    @ToString.Exclude
     private List<GradeEntity> grades;
+
+    private String updatedBy;
+    private LocalDateTime updatedDate;
 }
