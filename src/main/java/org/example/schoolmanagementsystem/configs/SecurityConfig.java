@@ -55,6 +55,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/v1/**").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
                                 .anyRequest().authenticated()
+
 //                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/login").permitAll()
 //                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
@@ -93,7 +94,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Bean per UserDetailsService me te tre repository-t
     @Bean
     public UserDetailsService userDetailsService(AdminRepository adminRepository,
                                                  TeacherRepository teacherRepository,
