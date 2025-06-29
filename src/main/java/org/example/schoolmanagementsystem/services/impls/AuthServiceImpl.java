@@ -15,6 +15,7 @@ import org.example.schoolmanagementsystem.security.AppUserDetailsService;
 import org.example.schoolmanagementsystem.services.interfaces.AuthService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -47,12 +48,29 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDetails authenticate(String email, String password) {
-        System.out.printf("Authenticating user with email: {}", email);
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        System.out.println("Trying to authenticate: " + email);
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        System.out.printf("Loaded user details for email: {}", email);
+
+        System.out.println("Encoded password: " + userDetails.getPassword());
+        System.out.println("Raw password: " + password);
+
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            System.out.println("Password mismatch!");
+            throw new BadCredentialsException("Invalid email or password");
+        }
+
+        var auth = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        System.out.println("Authentication successful!");
         return userDetails;
     }
+
+
+
 
 
     @Override

@@ -24,13 +24,15 @@ public class AppUserDetailsService implements UserDetailsService {
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
     }
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        System.out.println("Loading user with email: " + email); // 👈 Shto këtë
+
         return adminRepository.findByEmail(email)
                 .map(AppUserDetails::new)
                 .or(() -> teacherRepository.findByEmail(email).map(AppUserDetails::new))
                 .or(() -> studentRepository.findByEmail(email).map(AppUserDetails::new))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
+
 }
