@@ -1,5 +1,6 @@
 package org.example.schoolmanagementsystem.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class AppUserDetailsService implements UserDetailsService {
 
     private final AdminRepository adminRepository;

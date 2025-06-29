@@ -2,7 +2,6 @@
 package org.example.schoolmanagementsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-// import com.fasterxml.jackson.annotation.JsonIgnore; // Kjo mund të hiqet
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
@@ -15,7 +14,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-
 @Entity
 @Table(name = "grades")
 public class GradeEntity {
@@ -35,19 +33,17 @@ public class GradeEntity {
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    @JsonBackReference // Mbajtur @JsonBackReference për StudentEntity
+    @JsonBackReference // *për serializim pa cikle*
     @ToString.Exclude
     private StudentEntity student;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     @ToString.Exclude
-    @JsonBackReference // Mbajtur @JsonBackReference për TeacherEntity
     private TeacherEntity teacher;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
-    @JsonBackReference // Mbajtur @JsonBackReference për SubjectEntity
     @ToString.Exclude
     private SubjectEntity subject;
 }

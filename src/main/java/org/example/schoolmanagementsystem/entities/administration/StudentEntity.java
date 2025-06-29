@@ -15,10 +15,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "students")
 public class StudentEntity extends UserBaseInfo {
@@ -64,14 +64,14 @@ public class StudentEntity extends UserBaseInfo {
     @Column(name = "emergency_contact_phone", length = 20)
     private String emergencyContactPhone;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore // Korrekt. Ndalon ciklin e serializimit.
     @ToString.Exclude
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // *shmang serializimin e listës për të shmangur ciklin*
     private List<AttendanceEntity> attendanceRecords;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore // Korrekt. Ndalon ciklin e serializimit.
     @ToString.Exclude
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // *po ashtu*
     private List<GradeEntity> grades;
 
     private String updatedBy;

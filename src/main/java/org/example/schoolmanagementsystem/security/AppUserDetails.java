@@ -1,6 +1,7 @@
 package org.example.schoolmanagementsystem.security;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.entities.administration.AdminEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
@@ -10,7 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+
 @Getter
+@RequiredArgsConstructor
 public class AppUserDetails implements UserDetails {
 
     private final String email;

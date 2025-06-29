@@ -11,6 +11,7 @@ import org.example.schoolmanagementsystem.exceptions.ResourceNotFoundException;
 import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
+import org.example.schoolmanagementsystem.security.AppUserDetailsService;
 import org.example.schoolmanagementsystem.services.interfaces.AuthService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
+    private final AppUserDetailsService userDetailsService;
 
 
     @Value("${jwt.secret}")
@@ -46,9 +47,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDetails authenticate(String email, String password) {
+        System.out.printf("Authenticating user with email: {}", email);
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        return userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        System.out.printf("Loaded user details for email: {}", email);
+        return userDetails;
     }
+
 
     @Override
     public String generateToken(UserDetails userDetails) {

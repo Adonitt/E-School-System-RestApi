@@ -1,7 +1,7 @@
 // SubjectEntity.java
 package org.example.schoolmanagementsystem.entities;
 
-// import com.fasterxml.jackson.annotation.JsonBackReference; // Kjo mund të hiqet
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-
 @Entity
 @Table(name = "subjects")
 public class SubjectEntity {
@@ -28,6 +27,7 @@ public class SubjectEntity {
     private String description;
 
     @ManyToMany(mappedBy = "subjects")
+    @JsonBackReference // *për serializim pa cikle*
     @ToString.Exclude
     private List<TeacherEntity> teachers;
 

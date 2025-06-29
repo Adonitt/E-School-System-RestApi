@@ -7,11 +7,16 @@ import org.example.schoolmanagementsystem.dtos.student.CreateStudentDto;
 import org.example.schoolmanagementsystem.dtos.student.StudentListingDto;
 import org.example.schoolmanagementsystem.dtos.student.UpdateStudentDto;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
+import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.exceptions.EmailExistsException;
+import org.example.schoolmanagementsystem.exceptions.InvalidFormatException;
 import org.example.schoolmanagementsystem.exceptions.PersonalNumberLengthException;
 import org.example.schoolmanagementsystem.mappers.StudentMapper;
+import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
+import org.example.schoolmanagementsystem.repositories.TeacherRepository;
 import org.example.schoolmanagementsystem.services.interfaces.StudentService;
+import org.hibernate.sql.Update;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +27,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
+    private final TeacherRepository teacherRepository;
     private final StudentRepository repository;
+    private final AdminRepository adminRepository;
+
     private final StudentMapper mapper;
     private final PasswordEncoder passwordEncoder;
-    private final StudentRepository studentRepository;
 
 
     @Override
@@ -37,6 +44,7 @@ public class StudentServiceImpl implements StudentService {
         student.setPassword(encryptedPassword);
         student.setCreatedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         student.setCreatedDate(LocalDateTime.now());
+        student.setRole(RoleEnum.STUDENT);
         var savedStudent = repository.save(student);
         return mapper.toDto(savedStudent);
     }
@@ -46,12 +54,26 @@ public class StudentServiceImpl implements StudentService {
             throw new ValidationException("Passwords do not match.");
         }
 
-        if (studentRepository.existsByEmail(dto.getEmail())) {
-            throw new EmailExistsException("Email is already in use.");
+        // Email validation against all repositories
+        boolean emailExists = teacherRepository.existsByEmail(dto.getEmail())
+                || repository.existsByEmail(dto.getEmail())
+                || adminRepository.existsByEmail(dto.getEmail());
+
+        if (emailExists) {
+            throw new EmailExistsException("A user with this email already exists.");
         }
 
-        if (studentRepository.existsByPersonalNumber(dto.getPersonalNumber())) {
-            throw new PersonalNumberLengthException("Personal number is already in use.");
+        if (!dto.getPersonalNumber().matches("\\d{10}")) {
+            throw new InvalidFormatException("Personal number must contain only digits.");
+        }
+
+        // Personal number validation against all repositories
+        boolean personalNumberExists = teacherRepository.existsByPersonalNumber(dto.getPersonalNumber())
+                || repository.existsByPersonalNumber(dto.getPersonalNumber())
+                || adminRepository.existsByPersonalNumber(dto.getPersonalNumber());
+
+        if (personalNumberExists) {
+            throw new PersonalNumberLengthException("A user with this personal number already exists.");
         }
 
         if (dto.getBirthDate().isAfter(LocalDate.now().minusYears(5))) {
@@ -85,7 +107,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void modify(Long id, UpdateStudentDto dto) {
+    public UpdateStudentDto modify(Long id, UpdateStudentDto dto) {
         StudentEntity studentFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Student with id " + id + " does not exist"));
 
@@ -99,7 +121,6 @@ public class StudentServiceImpl implements StudentService {
         studentFromDb.setCountry(dto.getCountry());
         studentFromDb.setPostalCode(dto.getPostalCode());
         studentFromDb.setPhoneNumber(dto.getPhoneNumber());
-        studentFromDb.setRole(dto.getRole());
         studentFromDb.setNotes(dto.getNotes());
         studentFromDb.setEmail(dto.getEmail());
         studentFromDb.setPhoto(dto.getPhoto());
@@ -119,7 +140,7 @@ public class StudentServiceImpl implements StudentService {
         studentFromDb.setUpdatedDate(LocalDateTime.now());
 
         var savedStudent = repository.save(studentFromDb);
-        mapper.toUpdateDto(savedStudent);
+        return mapper.toUpdateDto(savedStudent);
     }
 
 

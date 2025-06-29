@@ -1,7 +1,6 @@
 package org.example.schoolmanagementsystem.dtos.administration;
 
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,24 +15,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminDto extends UserDto {
-    public Long adminNumber;
+    private Long adminNumber;
 
-    @Enumerated
+    @NotNull(message = "Department is required")
     private DepartmentEnum department;
 
     private boolean active;
 
-    @AssertTrue(message = "You must accept the terms and conditions")
     private boolean acceptTermsAndConditions;
 
     private String photo;
 
-    private String createdBy;
-
-    private LocalDateTime createdDate;
-
-    private String modifiedBy;
-
-    private LocalDateTime modifiedDate;
 
 }

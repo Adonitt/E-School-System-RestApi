@@ -41,12 +41,12 @@ public class TeacherEntity extends UserBaseInfo {
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
+    @JsonIgnore // *shmang serializim recursiv*
     @ToString.Exclude
-    @JsonIgnore // Zgjedhim të injorojmë subjects në serializimin e Teacher.
     private List<SubjectEntity> subjects;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // *po ashtu*
     @ToString.Exclude
-    @JsonIgnore // Zgjedhim të injorojmë grades në serializimin e Teacher.
     private List<GradeEntity> grades;
 }

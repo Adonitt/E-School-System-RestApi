@@ -3,10 +3,9 @@ package org.example.schoolmanagementsystem.inheritance;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter; // Zëvendëson @Data
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter; // Zëvendëson @Data
-import lombok.ToString;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.example.schoolmanagementsystem.enums.CitiesEnum;
 import org.example.schoolmanagementsystem.enums.CountryEnum;
@@ -23,7 +22,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @MappedSuperclass
 @SuperBuilder
-@ToString(exclude = {"password", "photo"})
 public abstract class UserBaseInfo {
 
     @Id

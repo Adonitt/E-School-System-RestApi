@@ -1,21 +1,18 @@
 package org.example.schoolmanagementsystem.dtos.student;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.schoolmanagementsystem.entities.AttendanceEntity;
-import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.enums.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class StudentDetailsDto {
+
     private Long id;
 
     private String photo;
@@ -56,21 +53,19 @@ public class StudentDetailsDto {
 
     private LocalDateTime modifiedDate;
 
-    private LocalDate registeredDate;  // Date the student joined
+    private LocalDate registeredDate;
 
-    private GradeEnum grade;  // E.g., "10A", "12B"
+    private String academicYear;
 
-    private String academicYear;  // E.g., "2024-2025"
+    private String currentSemester;
 
-    private String currentSemester;  // E.g., "Fall 2024", "Spring 2025"
+    private double gpa;
 
-    private double gpa;  // Grade Point Average
+    private int completedSemesters;
 
-    private int completedSemesters;  // Number of completed semesters
+    private boolean graduated;
 
-    private boolean graduated;  // True if the student has finished school
-
-    private boolean active;  // True if currently enrolled
+    private boolean active;
 
     private String guardianName;
 
@@ -82,7 +77,8 @@ public class StudentDetailsDto {
 
     private String emergencyContactPhone;
 
-    private List<AttendanceEntity> attendanceRecords;
+    // Në DTO idealisht nuk vendos entitete, por DTO të thjeshtë ose IDs
+    private List<Long> attendanceRecordIds;
 
-    private List<GradeEntity> grades;
+    private List<Long> gradeIds;
 }

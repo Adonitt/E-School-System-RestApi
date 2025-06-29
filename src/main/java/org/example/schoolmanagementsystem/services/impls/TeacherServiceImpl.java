@@ -2,31 +2,34 @@ package org.example.schoolmanagementsystem.services.impls;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.dtos.teacher.CreateTeacherDto;
 import org.example.schoolmanagementsystem.dtos.teacher.TeacherDetailsDto;
 import org.example.schoolmanagementsystem.dtos.teacher.TeacherListingDto;
 import org.example.schoolmanagementsystem.dtos.teacher.UpdateTeacherDto;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
+import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.exceptions.*;
 import org.example.schoolmanagementsystem.mappers.TeacherMapper;
+import org.example.schoolmanagementsystem.repositories.AdminRepository;
+import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
 import org.example.schoolmanagementsystem.services.interfaces.TeacherService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository repository;
+    private final StudentRepository studentRepository;
+    private final AdminRepository adminRepository;
     private final TeacherMapper mapper;
     private final PasswordEncoder passwordEncoder;
-
 
     @Override
     public CreateTeacherDto add(CreateTeacherDto dto) {
@@ -34,41 +37,61 @@ public class TeacherServiceImpl implements TeacherService {
 
         TeacherEntity teacher = mapper.toEntity(dto);
 
+        // Encode password
         String encryptedPassword = passwordEncoder.encode(teacher.getPassword());
         teacher.setPassword(encryptedPassword);
+
+        // Set audit info
+        String currentUserEmail = AuthServiceImpl.getLoggedInUserEmail();
+        String currentUserRole = AuthServiceImpl.getLoggedInUserRole();
+
+        teacher.setCreatedDate(LocalDateTime.now());
+        teacher.setModifiedDate(LocalDateTime.now());
+        teacher.setCreatedBy(currentUserEmail + " - " + currentUserRole);
+        teacher.setModifiedBy(currentUserEmail + " - " + currentUserRole);
+        teacher.setRole(RoleEnum.TEACHER);
+
+        System.out.println("User = " + AuthServiceImpl.getLoggedInUserEmail());
+        System.out.println("Authorities = " + AuthServiceImpl.getLoggedInUserRole());
+
 
         var savedEntity = repository.save(teacher);
         return mapper.toDto(savedEntity);
     }
+
 
     private void validateTeacher(CreateTeacherDto dto) {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             throw new ValidationException("Passwords do not match");
         }
 
-        if (repository.existsByEmail(dto.getEmail())) {
-            throw new EmailExistsException("A teacher with this email already exists.");
+        // Email validation against all repositories
+        boolean emailExists = repository.existsByEmail(dto.getEmail())
+                || studentRepository.existsByEmail(dto.getEmail())
+                || adminRepository.existsByEmail(dto.getEmail());
+
+        if (emailExists) {
+            throw new EmailExistsException("A user with this email already exists.");
         }
 
         if (!dto.getPersonalNumber().matches("\\d{10}")) {
             throw new InvalidFormatException("Personal number must contain only digits.");
         }
 
-        if (repository.existsByPersonalNumber(dto.getPersonalNumber())) {
-            throw new PersonalNumberLengthException("A teacher with this personal number already exists.");
+        boolean personalNumberExists = repository.existsByPersonalNumber(dto.getPersonalNumber())
+                || studentRepository.existsByPersonalNumber(dto.getPersonalNumber())
+                || adminRepository.existsByPersonalNumber(dto.getPersonalNumber());
+
+        if (personalNumberExists) {
+            throw new PersonalNumberLengthException("A user with this personal number already exists.");
         }
 
-        if (dto.getBirthDate().isAfter(LocalDate.now().minusYears(18))) {
+        if (dto.getBirthDate().isAfter(LocalDate.now().minusYears(21))) {
             throw new InvalidDataException("Teacher must be at least 21 years old.");
         }
 
         if (dto.getEmploymentDate().isAfter(LocalDate.now())) {
             throw new InvalidDataException("Employment date cannot be in the future.");
-        }
-
-        int calculatedYears = Period.between(dto.getEmploymentDate(), LocalDate.now()).getYears();
-        if (dto.getYearsOfExperience() > calculatedYears) {
-            throw new InvalidDataException("Years of experience cannot exceed employment duration.");
         }
 
         if (dto.getSpecialization() == null || dto.getSpecialization().isBlank()) {
@@ -78,8 +101,6 @@ public class TeacherServiceImpl implements TeacherService {
         if (dto.getSalary() < 300 || dto.getSalary() > 10000) {
             throw new InvalidDataException("Salary must be between 300 and 10,000.");
         }
-
-
     }
 
     @Override
@@ -98,7 +119,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public void modify(Long id, UpdateTeacherDto dto) {
+    public UpdateTeacherDto modify(Long id, UpdateTeacherDto dto) {
         TeacherEntity teacherFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher with id " + id + " does not exist"));
 
@@ -123,7 +144,7 @@ public class TeacherServiceImpl implements TeacherService {
         teacherFromDb.setQualification(dto.getQualification());
 
         var updatedEntity = repository.save(teacherFromDb);
-        mapper.toUpdateDto(updatedEntity);
+        return mapper.toUpdateDto(updatedEntity);
     }
 
     @Override

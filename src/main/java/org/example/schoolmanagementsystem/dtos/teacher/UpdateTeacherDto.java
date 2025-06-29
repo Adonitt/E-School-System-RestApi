@@ -4,8 +4,6 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.schoolmanagementsystem.entities.GradeEntity;
-import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.enums.*;
 
 import java.time.LocalDate;
@@ -15,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateTeacherDto {
+
     private Long id;
 
     @NotNull(message = "Personal number is required")
@@ -27,8 +26,8 @@ public class UpdateTeacherDto {
     @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters long")
     private String name;
 
-    @NotBlank(message = "Surname is required")
     @NotNull(message = "Surname is required")
+    @NotBlank(message = "Surname is required")
     @Size(min = 1, max = 50, message = "Surname must be between 1 and 50 characters long")
     private String surname;
 
@@ -51,9 +50,9 @@ public class UpdateTeacherDto {
     @Size(min = 5, max = 5, message = "Postal code must be 5 characters long")
     private String postalCode;
 
-    @Size(min = 6, max = 20, message = "Phone number must be between 10 and 20 characters long")
     @NotNull(message = "Phone number is required")
     @NotBlank(message = "Phone number is required")
+    @Size(min = 10, max = 20, message = "Phone number must be between 10 and 20 characters long")
     private String phoneNumber;
 
     private RoleEnum role;
@@ -65,6 +64,7 @@ public class UpdateTeacherDto {
     private String email;
 
     @NotNull(message = "Specialization is required")
+    @NotBlank(message = "Specialization is required")
     @Size(min = 3, max = 100, message = "Specialization must be between 3 and 100 characters")
     private String specialization;
 
@@ -78,4 +78,7 @@ public class UpdateTeacherDto {
     private LocalDate employmentDate;
 
     private QualificationEnum qualification;
+
+    // Lista e lëndëve me IDs (ose DTO të thjeshtë) për update
+    private List<Long> subjectIds;
 }

@@ -44,8 +44,11 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/admin").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/**").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
                                 .anyRequest().authenticated()
 
 //                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()

@@ -13,9 +13,8 @@ import lombok.experimental.SuperBuilder;
 import org.example.schoolmanagementsystem.enums.DepartmentEnum;
 import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 
-// HEQUR @Data
-@Getter // Shtuar
-@Setter // Shtuar
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder

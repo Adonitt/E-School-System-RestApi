@@ -54,7 +54,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public void modify(Long id, UpdateSubjectDto dto) {
+    public UpdateSubjectDto modify(Long id, UpdateSubjectDto dto) {
         SubjectEntity subjectFromDb = subjectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Subject not found with id " + id));
 
@@ -68,7 +68,7 @@ public class SubjectServiceImpl implements SubjectService {
         subjectFromDb.setTeachers(teachers);
 
         var updated = subjectRepository.save(subjectFromDb);
-        subjectMapper.toUpdateDto(updated);
+        return subjectMapper.toUpdateDto(updated);
     }
 
     @Override

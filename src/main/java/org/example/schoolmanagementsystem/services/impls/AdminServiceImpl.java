@@ -7,11 +7,15 @@ import org.example.schoolmanagementsystem.dtos.administration.AdminDetailsDto;
 import org.example.schoolmanagementsystem.dtos.administration.AdminDto;
 import org.example.schoolmanagementsystem.dtos.administration.AdminListingDto;
 import org.example.schoolmanagementsystem.entities.administration.AdminEntity;
+import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.exceptions.EmailExistsException;
+import org.example.schoolmanagementsystem.exceptions.InvalidFormatException;
 import org.example.schoolmanagementsystem.exceptions.PersonalNumberLengthException;
 import org.example.schoolmanagementsystem.mappers.AdminMapper;
 import org.example.schoolmanagementsystem.repositories.AdminRepository;
+import org.example.schoolmanagementsystem.repositories.StudentRepository;
+import org.example.schoolmanagementsystem.repositories.TeacherRepository;
 import org.example.schoolmanagementsystem.services.interfaces.AdminService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +30,8 @@ public class AdminServiceImpl implements AdminService {
     private final AdminRepository repository;
     private final AdminMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
     @Override
     public AdminDto add(AdminDto dto) {
@@ -38,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
 
         admin.setCreatedDate(LocalDateTime.now());
         admin.setCreatedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
-
+        admin.setRole(RoleEnum.ADMINISTRATOR);
         var savedEntity = repository.save(admin);
         return mapper.toDto(savedEntity);
     }
@@ -47,15 +53,27 @@ public class AdminServiceImpl implements AdminService {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             throw new ValidationException("Passwords do not match.");
         }
+// Email validation against all repositories
+        boolean emailExists = teacherRepository.existsByEmail(dto.getEmail())
+                || studentRepository.existsByEmail(dto.getEmail())
+                || repository.existsByEmail(dto.getEmail());
 
-        if (repository.existsByEmail(dto.getEmail())) {
-            throw new EmailExistsException("Email already exists.");
+        if (emailExists) {
+            throw new EmailExistsException("A user with this email already exists.");
         }
 
-        if (repository.existsByPersonalNumber(dto.getPersonalNumber())) {
-            throw new PersonalNumberLengthException("Personal number already exists.");
+        if (!dto.getPersonalNumber().matches("\\d{10}")) {
+            throw new InvalidFormatException("Personal number must contain only digits.");
         }
 
+        // Personal number validation against all repositories
+        boolean personalNumberExists = teacherRepository.existsByPersonalNumber(dto.getPersonalNumber())
+                || studentRepository.existsByPersonalNumber(dto.getPersonalNumber())
+                || repository.existsByPersonalNumber(dto.getPersonalNumber());
+
+        if (personalNumberExists) {
+            throw new PersonalNumberLengthException("A user with this personal number already exists.");
+        }
         if (dto.getDepartment() == null) {
             throw new ValidationException("Department is required.");
         }
@@ -87,7 +105,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void modify(Long id, AdminDto dto) {
+    public AdminDto modify(Long id, AdminDto dto) {
 
         AdminEntity adminFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Admin with id " + id + " does not exist"));
@@ -112,7 +130,7 @@ public class AdminServiceImpl implements AdminService {
         adminFromDb.setModifiedDate(LocalDateTime.now());
 
         var updatedEntity = repository.save(adminFromDb);
-        mapper.toDto(updatedEntity);
+        return mapper.toDto(updatedEntity);
     }
 
     @Override

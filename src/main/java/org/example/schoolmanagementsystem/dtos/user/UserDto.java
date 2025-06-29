@@ -9,10 +9,8 @@ import org.example.schoolmanagementsystem.enums.CitiesEnum;
 import org.example.schoolmanagementsystem.enums.CountryEnum;
 import org.example.schoolmanagementsystem.enums.GenderEnum;
 import org.example.schoolmanagementsystem.enums.RoleEnum;
-import org.example.schoolmanagementsystem.infrastructure.groups.OnPost;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -69,15 +67,12 @@ public class UserDto {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotNull(message = "Password is required", groups = OnPost.class)
-    @NotBlank(message = "Password is required", groups = OnPost.class)
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).*$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one number", groups = OnPost.class)
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).*$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one number")
     private String password;
 
-    @NotBlank(message = "Confirm Password field is required", groups = OnPost.class)
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).*$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one number", groups = OnPost.class)
+    @NotBlank(message = "Confirm Password field is required")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).*$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one number")
     private String confirmPassword;
-
 
 
 }

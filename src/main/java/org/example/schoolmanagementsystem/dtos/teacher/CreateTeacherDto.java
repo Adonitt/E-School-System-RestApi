@@ -1,16 +1,11 @@
 package org.example.schoolmanagementsystem.dtos.teacher;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.schoolmanagementsystem.dtos.user.UserDto;
-import org.example.schoolmanagementsystem.entities.GradeEntity;
-import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.enums.QualificationEnum;
 
 import java.time.LocalDate;
@@ -21,8 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateTeacherDto extends UserDto {
-    @NotNull(message = "Teacher ID is required")
-    @Size(min = 7, max = 7, message = "Teacher ID must be 7 digits")
+
+    // Id është Long, nuk ka kuptim @Size mbi Long, hiqe atë
     private Long id;
 
     @NotNull(message = "Specialization is required")
@@ -36,12 +31,13 @@ public class CreateTeacherDto extends UserDto {
     private double salary;
 
     @PastOrPresent(message = "Employment date must be in the past or present")
+    @NotNull(message = "Employment date is required")
     private LocalDate employmentDate;
 
     private QualificationEnum qualification;
 
-    private List<SubjectEntity> subjects; // Many-to-Many with subjects
+    // Në DTO më mirë vendos List<Long> subjectIds në vend të listës së entiteteve
+    private List<Long> subjectIds;
 
-    private List<GradeEntity> grades; // One teacher -> Many grades
-
+    // Grades zakonisht nuk i përfshijmë në create DTO, por në detaje
 }

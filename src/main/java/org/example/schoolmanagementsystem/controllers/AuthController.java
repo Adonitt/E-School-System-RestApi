@@ -1,10 +1,14 @@
 package org.example.schoolmanagementsystem.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.dtos.auth.AuthResponse;
 import org.example.schoolmanagementsystem.dtos.auth.LoginDto;
 import org.example.schoolmanagementsystem.services.interfaces.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,16 +16,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final AuthService service;
+    private final UserDetailsService userDetailsService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginDto loginDto) {
-        var user = service.authenticate(loginDto.getEmail(), loginDto.getPassword());
-
-        var token = service.generateToken(user);
-
-        var authResponse = new AuthResponse(token, 86400000L);
-
-        return ResponseEntity.ok(authResponse);
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto) {
+        try {
+            service.authenticate(loginDto.getEmail(), loginDto.getPassword());
+            var userDetails = userDetailsService.loadUserByUsername(loginDto.getEmail());
+            var token = service.generateToken(userDetails);
+            return ResponseEntity.ok(new AuthResponse(token, 86400000L));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
     }
+
 
 }
