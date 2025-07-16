@@ -56,7 +56,11 @@ public class ErrorController {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    // Utility method to create the response
+    @ExceptionHandler(StudentHasAlreadyANote.class)
+    public ResponseEntity<ErrorResponse> handleStudentHasAlreadyANote(StudentHasAlreadyANote ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status) {
         ErrorResponse error = new ErrorResponse();
         error.setMessage(message);

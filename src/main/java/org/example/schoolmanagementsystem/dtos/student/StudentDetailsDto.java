@@ -77,7 +77,6 @@ public class StudentDetailsDto {
 
     private String emergencyContactPhone;
 
-    // Në DTO idealisht nuk vendos entitete, por DTO të thjeshtë ose IDs
     private List<Long> attendanceRecordIds;
 
     private List<Long> gradeIds;

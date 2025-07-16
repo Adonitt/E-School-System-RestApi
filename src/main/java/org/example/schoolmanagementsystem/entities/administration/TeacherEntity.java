@@ -35,18 +35,18 @@ public class TeacherEntity extends UserBaseInfo {
     @Column(name = "qualification", length = 255)
     private QualificationEnum qualification;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "teacher_subject",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
-    @JsonIgnore // *shmang serializim recursiv*
+    @JsonIgnore
     @ToString.Exclude
     private List<SubjectEntity> subjects;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore // *po ashtu*
+    @JsonIgnore
     @ToString.Exclude
     private List<GradeEntity> grades;
 }

@@ -21,7 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,12 +47,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDetails authenticate(String email, String password) {
-        System.out.println("Trying to authenticate: " + email);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-        System.out.println("Encoded password: " + userDetails.getPassword());
-        System.out.println("Raw password: " + password);
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             System.out.println("Password mismatch!");
@@ -65,12 +60,8 @@ public class AuthServiceImpl implements AuthService {
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        System.out.println("Authentication successful!");
         return userDetails;
     }
-
-
-
 
 
     @Override

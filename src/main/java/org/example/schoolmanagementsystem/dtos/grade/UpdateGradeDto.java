@@ -6,12 +6,10 @@ import lombok.NoArgsConstructor;
 import org.example.schoolmanagementsystem.enums.GradeEnum;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class GradeRequestDto {
-    private Long studentId;
-    private Long subjectId;     // Optional, or derive from teacher
-    private Long teacherId;     // Optional, depends on your use-case
+@NoArgsConstructor
+public class UpdateGradeDto {
+    private Long id;
     private GradeEnum grade;
     private String academicYear;
     private String semester;

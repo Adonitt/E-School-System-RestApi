@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubjectDto> {
 
     @Mapping(target = "teacherNames", expression = "java(mapTeacherNames(subject.getTeachers()))")
-    SubjectListingDto toListingDto(SubjectEntity subject);
+    SubjectDto toListingDto(SubjectEntity subject);
 
     @Mapping(target = "teacherNames", expression = "java(mapTeacherNames(subject.getTeachers()))")
-    SubjectDetailsDto toDetailsDto(SubjectEntity subject);
+    SubjectDto toDetailsDto(SubjectEntity subject);
 
-    @Mapping(target = "teachers", ignore = true) // Në krijim, injorojmë entitetet e mësuesve
+    @Mapping(target = "teachers", ignore = true)
     SubjectEntity fromCreateDto(CreateSubjectDto dto);
 
     UpdateSubjectDto toUpdateDto(SubjectEntity subject);
@@ -30,4 +30,14 @@ public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubject
                 .map(t -> t.getName() + " " + t.getSurname())
                 .collect(Collectors.toList());
     }
+    default List<Long> mapTeacherEntitiesToIds(List<TeacherEntity> teachers) {
+        if (teachers == null) return null;
+        return teachers.stream().map(TeacherEntity::getId).collect(Collectors.toList());
+    }
+
+    default List<TeacherEntity> mapIdsToTeacherEntities(List<Long> ids) {
+        // Optional: Only use if you have access to the repository here (not common in MapStruct)
+        return null; // usually resolved in the service
+    }
+
 }

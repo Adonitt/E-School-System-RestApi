@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubjectDetailsDto {
+public class SubjectDto {
 
     private Long id;
     private String name;

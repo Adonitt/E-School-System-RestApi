@@ -33,7 +33,7 @@ public class GradeEntity {
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    @JsonBackReference // *për serializim pa cikle*
+    @JsonBackReference
     @ToString.Exclude
     private StudentEntity student;
 

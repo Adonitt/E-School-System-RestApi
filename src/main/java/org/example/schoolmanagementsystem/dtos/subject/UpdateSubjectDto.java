@@ -24,5 +24,5 @@ public class UpdateSubjectDto {
     private String description;
 
     @NotEmpty(message = "At least one teacher ID is required")
-    private List<Long> teacherIds;  // update assigned teachers
+    private List<Long> teacherIds;
 }

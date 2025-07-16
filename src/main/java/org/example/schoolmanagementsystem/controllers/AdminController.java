@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.dtos.administration.AdminDetailsDto;
 import org.example.schoolmanagementsystem.dtos.administration.AdminDto;
 import org.example.schoolmanagementsystem.dtos.administration.AdminListingDto;
+import org.example.schoolmanagementsystem.dtos.administration.UpdateAdminDto;
 import org.example.schoolmanagementsystem.services.interfaces.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class AdminController {
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<AdminDto> modify(@PathVariable Long id, @Valid @RequestBody AdminDto dto) {
+    public ResponseEntity<UpdateAdminDto> modify(@PathVariable Long id, @Valid @RequestBody UpdateAdminDto dto) {
         return ResponseEntity.ok(service.modify(id, dto));
     }
 
@@ -47,5 +48,11 @@ public class AdminController {
     public AdminDto getDefaultAdmin() {
         return new AdminDto();
     }
+
+    @GetMapping("/default/update")
+    public UpdateAdminDto getDefaultUpdateAdmin() {
+        return new UpdateAdminDto();
+    }
+
 }
 

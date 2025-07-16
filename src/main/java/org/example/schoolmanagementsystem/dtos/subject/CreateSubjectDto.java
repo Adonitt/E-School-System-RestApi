@@ -22,6 +22,6 @@ public class CreateSubjectDto {
     private String description;
 
     @NotEmpty(message = "At least one teacher ID is required")
-    private List<Long> teacherIds;  // List of existing teacher IDs to associate with this subject
+    private List<Long> teachers;
 
 }

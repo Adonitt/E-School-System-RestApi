@@ -27,7 +27,7 @@ public class SubjectEntity {
     private String description;
 
     @ManyToMany(mappedBy = "subjects")
-    @JsonBackReference // *për serializim pa cikle*
+    @JsonBackReference
     @ToString.Exclude
     private List<TeacherEntity> teachers;
 

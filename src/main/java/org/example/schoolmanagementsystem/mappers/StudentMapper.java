@@ -23,6 +23,7 @@ public interface StudentMapper extends SimpleMapper<StudentEntity, CreateStudent
 
     StudentEntity fromUpdateDto(UpdateStudentDto dto);
 
+
     @Mapping(target = "attendanceRecordIds", expression = "java(mapAttendanceIds(entity.getAttendanceRecords()))")
     @Mapping(target = "gradeIds", expression = "java(mapGradeIds(entity.getGrades()))")
     StudentDetailsDto toDetailsDto(StudentEntity entity);

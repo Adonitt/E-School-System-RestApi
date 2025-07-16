@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.dtos.administration.AdminDetailsDto;
 import org.example.schoolmanagementsystem.dtos.administration.AdminDto;
 import org.example.schoolmanagementsystem.dtos.administration.AdminListingDto;
+import org.example.schoolmanagementsystem.dtos.administration.UpdateAdminDto;
 import org.example.schoolmanagementsystem.entities.administration.AdminEntity;
-import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.exceptions.EmailExistsException;
 import org.example.schoolmanagementsystem.exceptions.InvalidFormatException;
@@ -17,7 +17,6 @@ import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
 import org.example.schoolmanagementsystem.services.interfaces.AdminService;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -105,7 +104,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminDto modify(Long id, AdminDto dto) {
+    public UpdateAdminDto modify(Long id, UpdateAdminDto dto) {
 
         AdminEntity adminFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Admin with id " + id + " does not exist"));
@@ -119,18 +118,22 @@ public class AdminServiceImpl implements AdminService {
         adminFromDb.setSurname(dto.getSurname());
         adminFromDb.setGender(dto.getGender());
         adminFromDb.setBirthDate(dto.getBirthDate());
-        adminFromDb.setPhoneNumber(dto.getPhoneNumber());
         adminFromDb.setCity(dto.getCity());
         adminFromDb.setCountry(dto.getCountry());
+        adminFromDb.setPhoneNumber(dto.getPhoneNumber());
         adminFromDb.setPostalCode(dto.getPostalCode());
         adminFromDb.setEmail(dto.getEmail());
         adminFromDb.setDepartment(dto.getDepartment());
         adminFromDb.setNotes(dto.getNotes());
+        adminFromDb.setAddress(dto.getAddress());
+        adminFromDb.setRole(dto.getRole());
+        adminFromDb.setActive(dto.isActive());
+        adminFromDb.setPhoto(dto.getPhoto());
         adminFromDb.setModifiedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         adminFromDb.setModifiedDate(LocalDateTime.now());
 
         var updatedEntity = repository.save(adminFromDb);
-        return mapper.toDto(updatedEntity);
+        return mapper.toUpdateDto(updatedEntity);
     }
 
     @Override

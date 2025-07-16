@@ -66,12 +66,12 @@ public class StudentEntity extends UserBaseInfo {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore // *shmang serializimin e listës për të shmangur ciklin*
+    @JsonIgnore
     private List<AttendanceEntity> attendanceRecords;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore // *po ashtu*
+    @JsonIgnore
     private List<GradeEntity> grades;
 
     private String updatedBy;

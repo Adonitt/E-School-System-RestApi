@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.dtos.student.CreateStudentDto;
+import org.example.schoolmanagementsystem.dtos.student.StudentDetailsDto;
 import org.example.schoolmanagementsystem.dtos.student.StudentListingDto;
 import org.example.schoolmanagementsystem.dtos.student.UpdateStudentDto;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
@@ -16,7 +17,6 @@ import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
 import org.example.schoolmanagementsystem.services.interfaces.StudentService;
-import org.hibernate.sql.Update;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,10 +54,17 @@ public class StudentServiceImpl implements StudentService {
             throw new ValidationException("Passwords do not match.");
         }
 
-        // Email validation against all repositories
         boolean emailExists = teacherRepository.existsByEmail(dto.getEmail())
                 || repository.existsByEmail(dto.getEmail())
                 || adminRepository.existsByEmail(dto.getEmail());
+
+        boolean personalNumberExists = teacherRepository.existsByPersonalNumber(dto.getPersonalNumber())
+                || repository.existsByPersonalNumber(dto.getPersonalNumber())
+                || adminRepository.existsByPersonalNumber(dto.getPersonalNumber());
+
+        if (personalNumberExists) {
+            throw new PersonalNumberLengthException("A user with this personal number already exists.");
+        }
 
         if (emailExists) {
             throw new EmailExistsException("A user with this email already exists.");
@@ -67,17 +74,8 @@ public class StudentServiceImpl implements StudentService {
             throw new InvalidFormatException("Personal number must contain only digits.");
         }
 
-        // Personal number validation against all repositories
-        boolean personalNumberExists = teacherRepository.existsByPersonalNumber(dto.getPersonalNumber())
-                || repository.existsByPersonalNumber(dto.getPersonalNumber())
-                || adminRepository.existsByPersonalNumber(dto.getPersonalNumber());
-
-        if (personalNumberExists) {
-            throw new PersonalNumberLengthException("A user with this personal number already exists.");
-        }
-
-        if (dto.getBirthDate().isAfter(LocalDate.now().minusYears(5))) {
-            throw new ValidationException("Student must be at least 5 years old.");
+        if (dto.getBirthDate().isAfter(LocalDate.now().minusYears(18))) {
+            throw new ValidationException("Student must be at least 18 years old.");
         }
 
         if (dto.getRegisteredDate() != null && dto.getRegisteredDate().isBefore(dto.getBirthDate())) {
@@ -91,6 +89,7 @@ public class StudentServiceImpl implements StudentService {
         if (!dto.getAcademicYear().matches("^[0-9]{4}-[0-9]{4}$")) {
             throw new ValidationException("Academic year must be in format YYYY-YYYY.");
         }
+
     }
 
 
@@ -101,9 +100,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public CreateStudentDto findById(Long id) {
+    public StudentDetailsDto findById(Long id) {
         var exists = repository.findById(id).orElseThrow(() -> new RuntimeException("Student with id " + id + " does not exist"));
-        return mapper.toDto(exists);
+        return mapper.toDetailsDto(exists);
     }
 
     @Override
