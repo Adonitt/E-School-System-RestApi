@@ -10,7 +10,6 @@ import org.example.schoolmanagementsystem.services.interfaces.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.plaf.SpinnerUI;
 import java.util.List;
 
 @RestController
@@ -51,8 +50,16 @@ public class StudentController {
     public CreateStudentDto getDefaultStudent() {
         return new CreateStudentDto();
     }
+
     @GetMapping("/default/update")
     public UpdateStudentDto getDefaultUpdateStudent() {
         return new UpdateStudentDto();
     }
+
+
+    @GetMapping("/students-by-class/{classNumber}")
+    public ResponseEntity<List<StudentDetailsDto>> getStudentsByClass(@PathVariable int classNumber) {
+        return ResponseEntity.ok(service.getStudentsByClass(classNumber));
+    }
+
 }

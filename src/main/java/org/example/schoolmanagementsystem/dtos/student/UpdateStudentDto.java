@@ -85,4 +85,7 @@ public class UpdateStudentDto {
     private GuardianEnum relationshipToStudent;
 
     private String photo;
+
+    private int classNumber;
+
 }

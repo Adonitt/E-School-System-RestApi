@@ -9,7 +9,6 @@ import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.context.annotation.Primary;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +16,9 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface StudentMapper extends SimpleMapper<StudentEntity, CreateStudentDto> {
 
-    List<StudentListingDto> toListingDto(List<StudentEntity> entities);
+    List<StudentListingDto> toListingDtoList(List<StudentEntity> entities);
+
+    StudentListingDto toListingDto(StudentEntity entity);
 
     UpdateStudentDto toUpdateDto(StudentEntity entity);
 

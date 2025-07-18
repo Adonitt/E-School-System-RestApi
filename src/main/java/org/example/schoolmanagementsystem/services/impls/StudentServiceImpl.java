@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,7 +97,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<StudentListingDto> findAll() {
         var studentsList = repository.findAll();
-        return mapper.toListingDto(studentsList);
+        return mapper.toListingDtoList(studentsList);
     }
 
     @Override
@@ -128,6 +129,7 @@ public class StudentServiceImpl implements StudentService {
         studentFromDb.setCurrentSemester(dto.getCurrentSemester());
         studentFromDb.setGraduated(dto.isGraduated());
         studentFromDb.setActive(dto.isActive());
+        studentFromDb.setClassNumber(dto.getClassNumber());
 
         studentFromDb.setGuardianName(dto.getGuardianName());
         studentFromDb.setGuardianPhoneNumber(dto.getGuardianPhoneNumber());
@@ -135,8 +137,8 @@ public class StudentServiceImpl implements StudentService {
         studentFromDb.setEmergencyContactPhone(dto.getEmergencyContactPhone());
         studentFromDb.setRelationshipToStudent(dto.getRelationshipToStudent());
 
-        studentFromDb.setUpdatedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
-        studentFromDb.setUpdatedDate(LocalDateTime.now());
+        studentFromDb.setModifiedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
+        studentFromDb.setModifiedDate(LocalDateTime.now());
 
         var savedStudent = repository.save(studentFromDb);
         return mapper.toUpdateDto(savedStudent);
@@ -148,4 +150,14 @@ public class StudentServiceImpl implements StudentService {
         findById(id);
         repository.deleteById(id);
     }
+
+    @Override
+    public List<StudentDetailsDto> getStudentsByClass(int classNumber) {
+        return repository.findByClassNumber(classNumber)
+                .stream()
+                .map(mapper::toDetailsDto)
+                .collect(Collectors.toList());
+    }
+
+
 }

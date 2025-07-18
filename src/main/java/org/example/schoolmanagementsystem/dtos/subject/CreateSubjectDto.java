@@ -1,5 +1,7 @@
 package org.example.schoolmanagementsystem.dtos.subject;
 
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -23,5 +25,13 @@ public class CreateSubjectDto {
 
     @NotEmpty(message = "At least one teacher ID is required")
     private List<Long> teachers;
+
+    @Min(value = 1, message = "Credits must be greater than 0")
+    private int credits;
+
+    @Min(value = 1, message = "Total hours must be greater than 0")
+    private int totalHours;
+
+
 
 }

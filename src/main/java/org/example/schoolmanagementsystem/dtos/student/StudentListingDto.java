@@ -23,4 +23,7 @@ public class StudentListingDto {
     private GenderEnum gender;
 
     private CountryEnum country;
+
+    private int classNumber;
+
 }

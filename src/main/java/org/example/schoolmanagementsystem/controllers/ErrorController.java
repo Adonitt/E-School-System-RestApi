@@ -61,6 +61,11 @@ public class ErrorController {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(AttendanceAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleAttendanceAlreadyExistsException(AttendanceAlreadyExistsException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status) {
         ErrorResponse error = new ErrorResponse();
         error.setMessage(message);

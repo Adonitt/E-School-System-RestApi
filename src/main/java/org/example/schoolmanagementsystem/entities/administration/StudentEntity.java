@@ -74,6 +74,7 @@ public class StudentEntity extends UserBaseInfo {
     @JsonIgnore
     private List<GradeEntity> grades;
 
-    private String updatedBy;
-    private LocalDateTime updatedDate;
+    @Column(name = "class_number", nullable = false)
+    private int classNumber;
+
 }

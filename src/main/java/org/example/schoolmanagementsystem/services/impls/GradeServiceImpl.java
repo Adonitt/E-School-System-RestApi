@@ -33,6 +33,7 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public CRDGradeDto add(CRDGradeDto dto) {
+
         StudentEntity student = studentRepository.findById(dto.getStudentId())
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 

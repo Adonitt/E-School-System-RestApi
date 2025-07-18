@@ -31,4 +31,10 @@ public class SubjectEntity {
     @ToString.Exclude
     private List<TeacherEntity> teachers;
 
+    @Column(name = "credits", nullable = false)
+    private int credits;
+
+    @Column(name = "total_hours", nullable = false)
+    private int totalHours;
+
 }

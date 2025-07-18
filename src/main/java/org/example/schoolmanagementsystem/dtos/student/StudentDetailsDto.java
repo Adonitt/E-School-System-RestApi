@@ -80,4 +80,7 @@ public class StudentDetailsDto {
     private List<Long> attendanceRecordIds;
 
     private List<Long> gradeIds;
+
+    private int classNumber;
+
 }

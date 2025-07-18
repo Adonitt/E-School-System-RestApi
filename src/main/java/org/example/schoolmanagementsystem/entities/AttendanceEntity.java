@@ -21,7 +21,7 @@ public class AttendanceEntity {
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
-    @JsonBackReference // *përdor për të ndaluar recursioni gjatë serializimit*
+    @JsonBackReference
     private StudentEntity student;
 
     @ManyToOne
@@ -31,8 +31,8 @@ public class AttendanceEntity {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @Column(name = "status", nullable = false, length = 10)
-    private String status;
+    @Column(name = "present", nullable = false, length = 10)
+    private boolean present;
 
     @Column(name = "notes", length = 255)
     private String notes;

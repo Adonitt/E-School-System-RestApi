@@ -7,6 +7,7 @@ import org.mapstruct.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Mapper(componentModel = "spring")
 public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubjectDto> {
 
@@ -16,12 +17,18 @@ public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubject
     @Mapping(target = "teacherNames", expression = "java(mapTeacherNames(subject.getTeachers()))")
     SubjectDto toDetailsDto(SubjectEntity subject);
 
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "credits", source = "credits")
+    @Mapping(target = "totalHours", source = "totalHours")
     @Mapping(target = "teachers", ignore = true)
     SubjectEntity fromCreateDto(CreateSubjectDto dto);
 
     UpdateSubjectDto toUpdateDto(SubjectEntity subject);
 
-    @Mapping(target = "teachers", ignore = true) // Në update, injorojmë listën e entiteteve
+    @Mapping(target = "teachers", ignore = true)
+    @Mapping(target = "credits", source = "credits")
+    @Mapping(target = "totalHours", source = "totalHours")
     SubjectEntity fromUpdateDto(UpdateSubjectDto dto);
 
     default List<String> mapTeacherNames(List<TeacherEntity> teachers) {
@@ -30,6 +37,7 @@ public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubject
                 .map(t -> t.getName() + " " + t.getSurname())
                 .collect(Collectors.toList());
     }
+
     default List<Long> mapTeacherEntitiesToIds(List<TeacherEntity> teachers) {
         if (teachers == null) return null;
         return teachers.stream().map(TeacherEntity::getId).collect(Collectors.toList());

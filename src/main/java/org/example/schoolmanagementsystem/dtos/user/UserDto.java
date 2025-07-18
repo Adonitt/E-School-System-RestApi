@@ -61,8 +61,6 @@ public class UserDto {
 
     private RoleEnum role;
 
-    @Size(max = 255, message = "Notes must be at most 255 characters long")
-    private String notes;
 
     @Email(message = "Invalid email format")
     private String email;
@@ -74,5 +72,7 @@ public class UserDto {
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).*$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one number")
     private String confirmPassword;
 
+    @Size(max = 255, message = "Notes must be at most 255 characters long")
+    private String notes;
 
 }

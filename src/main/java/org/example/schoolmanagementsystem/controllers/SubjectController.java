@@ -30,6 +30,8 @@ public class SubjectController {
 
     @PostMapping("/create")
     public ResponseEntity<CreateSubjectDto> create(@Valid @RequestBody CreateSubjectDto dto) {
+        System.out.println("Credits: " + dto.getCredits());
+        System.out.println("TotalHours: " + dto.getTotalHours());
         return ResponseEntity.ok(service.add(dto));
     }
 
@@ -48,6 +50,7 @@ public class SubjectController {
     public CreateSubjectDto getDefaultSubject() {
         return new CreateSubjectDto();
     }
+
     @GetMapping("/default/update")
     public UpdateSubjectDto getDefaultUpdateSubject() {
         return new UpdateSubjectDto();

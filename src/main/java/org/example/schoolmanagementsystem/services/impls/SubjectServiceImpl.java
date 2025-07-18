@@ -37,8 +37,19 @@ public class SubjectServiceImpl implements SubjectService {
         }
 
         var subject = subjectMapper.fromCreateDto(dto);
+        System.out.println("Subject credits: " + subject.getCredits());
+        System.out.println("Subject totalHours: " + subject.getTotalHours());
 
         subject.setTeachers(teachers);
+
+        if (dto.getCredits() <= 0) {
+            throw new IllegalArgumentException("Credits must be greater than 0");
+        }
+
+        if (dto.getTotalHours() <= 0) {
+            throw new IllegalArgumentException("Total hours must be greater than 0");
+        }
+
 
         for (TeacherEntity teacher : teachers) {
             if (teacher.getSubjects() == null) {
@@ -50,7 +61,6 @@ public class SubjectServiceImpl implements SubjectService {
         }
 
         var savedSubject = subjectRepository.save(subject);
-
         return subjectMapper.toDto(savedSubject);
     }
 
@@ -85,6 +95,9 @@ public class SubjectServiceImpl implements SubjectService {
         }
         subjectFromDb.setTeachers(teachers);
 
+        subjectFromDb.setCredits(dto.getCredits());
+        subjectFromDb.setTotalHours(dto.getTotalHours());
+
         var updated = subjectRepository.save(subjectFromDb);
         return subjectMapper.toUpdateDto(updated);
     }
@@ -95,7 +108,6 @@ public class SubjectServiceImpl implements SubjectService {
         SubjectEntity subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Subject with id " + id + " not found"));
 
-        // Break relationship on owning side
         List<TeacherEntity> teachers = subject.getTeachers();
         if (teachers != null) {
             for (TeacherEntity teacher : teachers) {

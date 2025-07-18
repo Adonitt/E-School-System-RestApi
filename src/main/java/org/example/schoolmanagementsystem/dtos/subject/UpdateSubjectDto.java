@@ -25,4 +25,8 @@ public class UpdateSubjectDto {
 
     @NotEmpty(message = "At least one teacher ID is required")
     private List<Long> teacherIds;
+
+    private int credits;
+
+    private int totalHours;
 }

@@ -50,4 +50,7 @@ public class CreateStudentDto extends UserDto {
 
     @NotNull(message = "Relationship to student is required")
     private GuardianEnum relationshipToStudent;
+
+    private int classNumber;
+
 }
