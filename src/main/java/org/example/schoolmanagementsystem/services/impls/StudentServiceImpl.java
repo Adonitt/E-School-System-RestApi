@@ -12,10 +12,12 @@ import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.exceptions.EmailExistsException;
 import org.example.schoolmanagementsystem.exceptions.InvalidFormatException;
 import org.example.schoolmanagementsystem.exceptions.PersonalNumberLengthException;
+import org.example.schoolmanagementsystem.helpers.FileHelper;
 import org.example.schoolmanagementsystem.mappers.StudentMapper;
 import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
+import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.example.schoolmanagementsystem.services.interfaces.StudentService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,8 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentMapper mapper;
     private final PasswordEncoder passwordEncoder;
-
+    private final EmailService emailService;
+    private final FileHelper fileHelper;
 
     @Override
     public CreateStudentDto add(CreateStudentDto dto) {
@@ -46,6 +49,10 @@ public class StudentServiceImpl implements StudentService {
         student.setCreatedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         student.setCreatedDate(LocalDateTime.now());
         student.setRole(RoleEnum.STUDENT);
+
+        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
+        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
+
         var savedStudent = repository.save(student);
         return mapper.toDto(savedStudent);
     }
@@ -123,13 +130,14 @@ public class StudentServiceImpl implements StudentService {
         studentFromDb.setPhoneNumber(dto.getPhoneNumber());
         studentFromDb.setNotes(dto.getNotes());
         studentFromDb.setEmail(dto.getEmail());
-        studentFromDb.setPhoto(dto.getPhoto());
+
 
         studentFromDb.setAcademicYear(dto.getAcademicYear());
         studentFromDb.setCurrentSemester(dto.getCurrentSemester());
         studentFromDb.setGraduated(dto.isGraduated());
         studentFromDb.setActive(dto.isActive());
         studentFromDb.setClassNumber(dto.getClassNumber());
+
 
         studentFromDb.setGuardianName(dto.getGuardianName());
         studentFromDb.setGuardianPhoneNumber(dto.getGuardianPhoneNumber());

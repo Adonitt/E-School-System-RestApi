@@ -39,5 +39,5 @@ public class CreateTeacherDto extends UserDto {
     // Në DTO më mirë vendos List<Long> subjectIds në vend të listës së entiteteve
     private List<Long> subjectIds;
 
-    // Grades zakonisht nuk i përfshijmë në create DTO, por në detaje
+    private String photo;
 }

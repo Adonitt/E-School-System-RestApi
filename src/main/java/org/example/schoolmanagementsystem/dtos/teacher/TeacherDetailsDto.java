@@ -67,5 +67,4 @@ public class TeacherDetailsDto {
     // Në vend të entiteteve, lista e IDs ose DTO të thjeshtë e lëndëve
     private List<Long> subjectIds;
 
-    // Grades gjithashtu mund të jenë DTO veç e veç (jo entitete direkt)
 }

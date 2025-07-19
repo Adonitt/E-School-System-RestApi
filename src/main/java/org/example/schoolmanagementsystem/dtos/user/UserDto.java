@@ -75,4 +75,5 @@ public class UserDto {
     @Size(max = 255, message = "Notes must be at most 255 characters long")
     private String notes;
 
+
 }

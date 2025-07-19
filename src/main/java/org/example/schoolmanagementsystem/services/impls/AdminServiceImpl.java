@@ -12,11 +12,13 @@ import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.exceptions.EmailExistsException;
 import org.example.schoolmanagementsystem.exceptions.InvalidFormatException;
 import org.example.schoolmanagementsystem.exceptions.PersonalNumberLengthException;
+import org.example.schoolmanagementsystem.helpers.FileHelper;
 import org.example.schoolmanagementsystem.mappers.AdminMapper;
 import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
 import org.example.schoolmanagementsystem.services.interfaces.AdminService;
+import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ public class AdminServiceImpl implements AdminService {
     private final PasswordEncoder passwordEncoder;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final EmailService emailService;
+    private final FileHelper fileHelper;
 
     @Override
     public AdminDto add(AdminDto dto) {
@@ -44,6 +48,10 @@ public class AdminServiceImpl implements AdminService {
         admin.setCreatedDate(LocalDateTime.now());
         admin.setCreatedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         admin.setRole(RoleEnum.ADMINISTRATOR);
+
+        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
+        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
+
         var savedEntity = repository.save(admin);
         return mapper.toDto(savedEntity);
     }
@@ -52,7 +60,7 @@ public class AdminServiceImpl implements AdminService {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             throw new ValidationException("Passwords do not match.");
         }
-// Email validation against all repositories
+
         boolean emailExists = teacherRepository.existsByEmail(dto.getEmail())
                 || studentRepository.existsByEmail(dto.getEmail())
                 || repository.existsByEmail(dto.getEmail());
@@ -65,7 +73,6 @@ public class AdminServiceImpl implements AdminService {
             throw new InvalidFormatException("Personal number must contain only digits.");
         }
 
-        // Personal number validation against all repositories
         boolean personalNumberExists = teacherRepository.existsByPersonalNumber(dto.getPersonalNumber())
                 || studentRepository.existsByPersonalNumber(dto.getPersonalNumber())
                 || repository.existsByPersonalNumber(dto.getPersonalNumber());
@@ -81,7 +88,6 @@ public class AdminServiceImpl implements AdminService {
             throw new ValidationException("You must accept the terms and conditions.");
         }
 
-        // Optional:
         if (dto.getRole() != RoleEnum.ADMINISTRATOR) {
             throw new ValidationException("Role must be ADMINISTRATOR.");
         }
@@ -105,7 +111,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public UpdateAdminDto modify(Long id, UpdateAdminDto dto) {
-
         AdminEntity adminFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Admin with id " + id + " does not exist"));
 
@@ -128,7 +133,8 @@ public class AdminServiceImpl implements AdminService {
         adminFromDb.setAddress(dto.getAddress());
         adminFromDb.setRole(dto.getRole());
         adminFromDb.setActive(dto.isActive());
-        adminFromDb.setPhoto(dto.getPhoto());
+
+
         adminFromDb.setModifiedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         adminFromDb.setModifiedDate(LocalDateTime.now());
 

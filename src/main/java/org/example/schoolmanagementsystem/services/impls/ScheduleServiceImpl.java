@@ -67,7 +67,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     public CRUDScheduleDto modify(Long id, CRUDScheduleDto dto) {
         ScheduleEntity schedule = scheduleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Schedule not found with id " + id));
 
-        // Kontrollo për konflikt orari (mos i lejo me dy schedule në të njëjtën kohë për klasë)
         boolean isConflict = scheduleRepository.existsByClassNumberAndDayOfWeekAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(dto.getClassNumber(), dto.getDayOfWeek(), dto.getEndTime(), dto.getStartTime());
 
         if (isConflict) {

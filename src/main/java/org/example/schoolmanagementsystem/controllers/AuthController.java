@@ -3,7 +3,9 @@ package org.example.schoolmanagementsystem.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.dtos.auth.AuthResponse;
+import org.example.schoolmanagementsystem.dtos.auth.ChangePasswordDto;
 import org.example.schoolmanagementsystem.dtos.auth.LoginDto;
+import org.example.schoolmanagementsystem.services.impls.AuthServiceImpl;
 import org.example.schoolmanagementsystem.services.interfaces.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,18 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordDto request) {
+        String email = AuthServiceImpl.getLoggedInUserEmail();
+        service.changePassword(request, email);
+        return ResponseEntity.ok("Password changed successfully");
+    }
+
+    @GetMapping("/default-change-password")
+    public ChangePasswordDto getDefaultChangePassword() {
+        return new ChangePasswordDto();
     }
 
 

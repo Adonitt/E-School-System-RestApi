@@ -10,10 +10,12 @@ import org.example.schoolmanagementsystem.dtos.teacher.UpdateTeacherDto;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.exceptions.*;
+import org.example.schoolmanagementsystem.helpers.FileHelper;
 import org.example.schoolmanagementsystem.mappers.TeacherMapper;
 import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
+import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.example.schoolmanagementsystem.services.interfaces.TeacherService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,18 +32,19 @@ public class TeacherServiceImpl implements TeacherService {
     private final AdminRepository adminRepository;
     private final TeacherMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+    private final FileHelper fileHelper;
 
     @Override
     public CreateTeacherDto add(CreateTeacherDto dto) {
         validateTeacher(dto);
 
+
         TeacherEntity teacher = mapper.toEntity(dto);
 
-        // Encode password
         String encryptedPassword = passwordEncoder.encode(teacher.getPassword());
         teacher.setPassword(encryptedPassword);
 
-        // Set audit info
         String currentUserEmail = AuthServiceImpl.getLoggedInUserEmail();
         String currentUserRole = AuthServiceImpl.getLoggedInUserRole();
 
@@ -51,9 +54,9 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setModifiedBy(currentUserEmail + " - " + currentUserRole);
         teacher.setRole(RoleEnum.TEACHER);
 
-        System.out.println("User = " + AuthServiceImpl.getLoggedInUserEmail());
-        System.out.println("Authorities = " + AuthServiceImpl.getLoggedInUserRole());
 
+        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
+        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
 
         var savedEntity = repository.save(teacher);
         return mapper.toDto(savedEntity);
@@ -122,6 +125,7 @@ public class TeacherServiceImpl implements TeacherService {
     public UpdateTeacherDto modify(Long id, UpdateTeacherDto dto) {
         TeacherEntity teacherFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher with id " + id + " does not exist"));
+
 
         teacherFromDb.setPersonalNumber(dto.getPersonalNumber());
         teacherFromDb.setName(dto.getName());

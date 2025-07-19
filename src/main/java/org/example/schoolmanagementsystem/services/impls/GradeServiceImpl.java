@@ -14,6 +14,7 @@ import org.example.schoolmanagementsystem.repositories.GradeRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.SubjectRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
+import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.example.schoolmanagementsystem.services.interfaces.GradeService;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class GradeServiceImpl implements GradeService {
     private final StudentRepository studentRepository;
     private final SubjectRepository subjectRepository;
     private final GradeMapper gradeMapper;
+    private final EmailService emailService;
 
     @Override
     public CRDGradeDto add(CRDGradeDto dto) {
@@ -58,6 +60,7 @@ public class GradeServiceImpl implements GradeService {
         grade.setDateGiven(LocalDate.now());
 
         var savedGrade = gradeRepository.save(grade);
+        emailService.sendGradeNotification(student, savedGrade);
         return gradeMapper.toDto(savedGrade);
     }
 
@@ -85,8 +88,8 @@ public class GradeServiceImpl implements GradeService {
         grade.setAcademicYear(dto.getAcademicYear());
 
         var savedGrade = gradeRepository.save(grade);
+        emailService.sendGradeUpdateNotification(grade.getStudent(), savedGrade);
         return gradeMapper.toUpdateDto(savedGrade);
-
     }
 
     @Override
