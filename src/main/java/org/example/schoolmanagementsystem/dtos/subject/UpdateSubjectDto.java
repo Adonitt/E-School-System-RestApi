@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
 import java.util.List;
 
@@ -29,4 +30,6 @@ public class UpdateSubjectDto {
     private int credits;
 
     private int totalHours;
+    private List<SemesterEnum> semesters;
+
 }

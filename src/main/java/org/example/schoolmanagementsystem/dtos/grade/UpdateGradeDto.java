@@ -10,7 +10,9 @@ import org.example.schoolmanagementsystem.enums.GradeEnum;
 @NoArgsConstructor
 public class UpdateGradeDto {
     private Long id;
+    private Long studentId;
     private GradeEnum grade;
     private String academicYear;
     private String semester;
+    private Double attendancePercentageUsed;
 }

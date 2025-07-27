@@ -32,4 +32,6 @@ public class CRDGradeDto {
 
     private String teacher;
 
+    private Double attendancePercentageUsed;
+
 }

@@ -2,18 +2,21 @@ package org.example.schoolmanagementsystem.services.impls;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.schoolmanagementsystem.dtos.grade.CRDGradeDto;
 import org.example.schoolmanagementsystem.dtos.grade.UpdateGradeDto;
+import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
+import org.example.schoolmanagementsystem.entities.AttendanceEntity;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
+import org.example.schoolmanagementsystem.exceptions.StudentCannotBeNotedException;
 import org.example.schoolmanagementsystem.exceptions.StudentHasAlreadyANote;
 import org.example.schoolmanagementsystem.mappers.GradeMapper;
-import org.example.schoolmanagementsystem.repositories.GradeRepository;
-import org.example.schoolmanagementsystem.repositories.StudentRepository;
-import org.example.schoolmanagementsystem.repositories.SubjectRepository;
-import org.example.schoolmanagementsystem.repositories.TeacherRepository;
+import org.example.schoolmanagementsystem.mappers.SubjectMapper;
+import org.example.schoolmanagementsystem.repositories.*;
 import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.example.schoolmanagementsystem.services.interfaces.GradeService;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GradeServiceImpl implements GradeService {
@@ -32,6 +36,7 @@ public class GradeServiceImpl implements GradeService {
     private final SubjectRepository subjectRepository;
     private final GradeMapper gradeMapper;
     private final EmailService emailService;
+    private final AttendanceRepository attendanceRepository;
 
     @Override
     public CRDGradeDto add(CRDGradeDto dto) {
@@ -50,6 +55,22 @@ public class GradeServiceImpl implements GradeService {
             throw new StudentHasAlreadyANote("This student already has a grade for this subject from this teacher.");
         }
 
+        List<AttendanceEntity> attendances = attendanceRepository.findByStudentAndSubject(student, subject);
+        long totalAttendances = attendances.size();
+        long presentDays = attendances.stream().filter(AttendanceEntity::isPresent).count();
+        double calculatedAttendance = totalAttendances == 0 ? 0 : (double) presentDays / totalAttendances;
+
+        double usedAttendance = dto.getAttendancePercentageUsed() != null
+                ? dto.getAttendancePercentageUsed() / 100.0
+                : calculatedAttendance;
+
+        System.out.println("usedAttendance = " + usedAttendance);
+
+        if (usedAttendance < 0.6) {
+            emailService.sendReexaminationNotification(student, subject, student.getAcademicYear(), student.getCurrentSemester(), calculatedAttendance);
+            throw new StudentCannotBeNotedException("Student cannot be noted with less than 60% attendance! He will be given a reexamination!");
+        }
+
         GradeEntity grade = new GradeEntity();
         grade.setTeacher(teacher);
         grade.setStudent(student);
@@ -58,6 +79,7 @@ public class GradeServiceImpl implements GradeService {
         grade.setAcademicYear(dto.getAcademicYear());
         grade.setSemester(dto.getSemester());
         grade.setDateGiven(LocalDate.now());
+        grade.setAttendancePercentageUsed(usedAttendance);
 
         var savedGrade = gradeRepository.save(grade);
         emailService.sendGradeNotification(student, savedGrade);
@@ -83,9 +105,19 @@ public class GradeServiceImpl implements GradeService {
         GradeEntity grade = gradeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Grade not found"));
 
+        double usedAttendance = dto.getAttendancePercentageUsed() != null
+                ? dto.getAttendancePercentageUsed() / 100.0
+                : (grade.getAttendancePercentageUsed() != null ? grade.getAttendancePercentageUsed() : 0);
+
+        if (usedAttendance < 0.6) {
+            emailService.sendReexaminationNotification(grade.getStudent(), grade.getSubject(), grade.getAcademicYear(), grade.getSemester(), grade.getAttendancePercentageUsed());
+            throw new StudentCannotBeNotedException("Student cannot be noted with less than 60% attendance! He will be given a reexamination!");
+        }
+
         grade.setGrade(dto.getGrade());
         grade.setSemester(dto.getSemester());
         grade.setAcademicYear(dto.getAcademicYear());
+        grade.setAttendancePercentageUsed(usedAttendance);
 
         var savedGrade = gradeRepository.save(grade);
         emailService.sendGradeUpdateNotification(grade.getStudent(), savedGrade);
@@ -134,6 +166,7 @@ public class GradeServiceImpl implements GradeService {
                 .map(gradeMapper::toDto)
                 .collect(Collectors.groupingBy(CRDGradeDto::getTeacher));
     }
+
 
 
 }

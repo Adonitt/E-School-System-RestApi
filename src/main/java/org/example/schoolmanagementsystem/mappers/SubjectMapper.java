@@ -44,8 +44,7 @@ public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubject
     }
 
     default List<TeacherEntity> mapIdsToTeacherEntities(List<Long> ids) {
-        // Optional: Only use if you have access to the repository here (not common in MapStruct)
-        return null; // usually resolved in the service
+        return null;
     }
 
 }

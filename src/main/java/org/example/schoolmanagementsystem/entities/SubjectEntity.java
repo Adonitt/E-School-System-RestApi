@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
 import java.util.List;
 
@@ -37,4 +38,7 @@ public class SubjectEntity {
     @Column(name = "total_hours", nullable = false)
     private int totalHours;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "semester")
+    private List<SemesterEnum> semesters;
 }

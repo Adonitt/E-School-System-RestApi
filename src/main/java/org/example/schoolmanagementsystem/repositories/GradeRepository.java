@@ -7,7 +7,12 @@ import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface GradeRepository extends JpaRepository<GradeEntity, Long> {
     boolean existsByStudentAndSubjectAndTeacher(StudentEntity student, SubjectEntity subject, TeacherEntity teacher);
+
+    Optional<GradeEntity> findByIdAndStudent_Id(Long gradeId, Long studentId);
+
 }

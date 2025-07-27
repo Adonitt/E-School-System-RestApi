@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
 import java.util.List;
 
@@ -32,6 +33,6 @@ public class CreateSubjectDto {
     @Min(value = 1, message = "Total hours must be greater than 0")
     private int totalHours;
 
-
+    private List<SemesterEnum> semesters;
 
 }

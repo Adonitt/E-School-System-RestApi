@@ -68,7 +68,6 @@ public class TeacherServiceImpl implements TeacherService {
             throw new ValidationException("Passwords do not match");
         }
 
-        // Email validation against all repositories
         boolean emailExists = repository.existsByEmail(dto.getEmail())
                 || studentRepository.existsByEmail(dto.getEmail())
                 || adminRepository.existsByEmail(dto.getEmail());

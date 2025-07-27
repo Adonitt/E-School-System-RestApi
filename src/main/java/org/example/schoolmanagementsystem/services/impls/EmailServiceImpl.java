@@ -2,8 +2,10 @@ package org.example.schoolmanagementsystem.services.impls;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
+import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 import org.example.schoolmanagementsystem.services.interfaces.EmailService;
@@ -84,23 +86,21 @@ public class EmailServiceImpl implements EmailService {
         String to = student.getEmail();
         String subject = "Nota juaj është regjistruar në sistem";
         String message = String.format("""
-                        Përshëndetje %s,
-                        
-                        Ju informojmë se nota juaj për lëndën '%s' është regjistruar me vlerën: %s.
-                        
-                        Viti akademik: %s
-                        Semestri: %s
-                        Data e regjistrimit: %s
-                        Profesori: %s
-                        
-                        Nëse keni pyetje, ju lutemi kontaktoni profesorin ose administratën.
-                        
-                        Me respekt,
-                        Stafi i Shkollës
-                        """, student.getName(), grade.getSubject().getName(), grade.getGrade(),
-                grade.getAcademicYear(), grade.getSemester(), grade.getDateGiven(),
-                grade.getTeacher().getName() + " " + grade.getTeacher().getSurname()
-        );
+                Përshëndetje %s,
+                
+                Ju informojmë se nota juaj për lëndën '%s' është regjistruar me vlerën: %s.
+                
+                Viti akademik: %s
+                Semestri: %s
+                Data e regjistrimit: %s
+                Profesori: %s
+                Pjesemarrja: %s
+                
+                Nëse keni pyetje, ju lutemi kontaktoni profesorin ose administratën.
+                
+                Me respekt,
+                Stafi i Shkollës
+                """, student.getName(), grade.getSubject().getName(), grade.getGrade(), grade.getAcademicYear(), grade.getSemester(), grade.getDateGiven(), grade.getTeacher().getName() + " " + grade.getTeacher().getSurname(), grade.getAttendancePercentageUsed());
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(to);
@@ -117,33 +117,63 @@ public class EmailServiceImpl implements EmailService {
         String subject = "Ndryshim i notas në sistemin shkollor";
 
         String message = String.format("""
-                         I/e nderuar %s,
-                        
-                         Ju njoftojmë se nota juaj për lëndën '%s' është përditësuar në sistemin shkollor.
-                        
-                         Nota e re: %s
-                         Viti akademik: %s
-                         Semestri: %s
-                         Data e ndryshimit: %s
-                        Profesori: %s
-                        
-                         Kërkojmë ndjesë për çdo keqkuptim apo gabim që ka ndodhur më parë.
-                        
-                         Për çfarëdo paqartësie, ju lutemi kontaktoni profesorin ose administratën.
-                        
-                         Me respekt,
-                         Stafi i Shkollës
-                        """, student.getName(), updatedGrade.getSubject().getName(),
-                updatedGrade.getGrade(), updatedGrade.getAcademicYear(),
-                updatedGrade.getSemester(), LocalDate.now(), updatedGrade.getTeacher().getName() + " " + updatedGrade.getTeacher().getSurname());
+                 I/e nderuar %s,
+                
+                 Ju njoftojmë se nota juaj për lëndën '%s' është përditësuar në sistemin shkollor.
+                
+                 Nota e re: %s
+                 Viti akademik: %s
+                 Semestri: %s
+                 Data e ndryshimit: %s
+                 Profesori: %s
+                 Pjesemarrja: %s
+                
+                 Kërkojmë ndjesë për çdo keqkuptim apo gabim që ka ndodhur më parë.
+                
+                 Për çfarëdo paqartësie, ju lutemi kontaktoni profesorin ose administratën.
+                
+                 Me respekt,
+                 Stafi i Shkollës
+                """, student.getName(), updatedGrade.getSubject().getName(), updatedGrade.getGrade(), updatedGrade.getAcademicYear(), updatedGrade.getSemester(), LocalDate.now(), updatedGrade.getTeacher().getName() + " " + updatedGrade.getTeacher().getSurname(), updatedGrade.getAttendancePercentageUsed());
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(to);
         email.setSubject(subject);
         email.setText(message);
+
+        mailSender.send(email);
+    }
+
+    @Override
+    public void sendReexaminationNotification(StudentEntity student, SubjectEntity subject, String academicYear, String semester, Double attendance) {
+        String to = student.getEmail();
+        String subjectName = "Njoftim për Riprovim";
+
+        String message = String.format("""
+                Përshëndetje %s,
+                
+                Pjesëmarrja juaj është: %.2f%%
+                
+                Ju njoftojmë se, sipas regjistrimeve të prezencës, pjesëmarrja juaj në lëndën '%s' për vitin akademik %s dhe semestrin %s është më pak se 60%%. Për këtë arsye, nuk plotësoni kriteret për notën dhe do të duhet të merrni pjesë në riprovim për këtë lëndë.
+                
+                Ju lutemi përgatituni dhe kontaktoni administratën ose mësuesin për më shumë informacion mbi datat dhe procedurat e riprovimit.
+                
+                Nëse keni ndonjë pyetje, mos hezitoni të na kontaktoni.
+                
+                Ju urojmë suksese në përgatitje!
+                
+                Me respekt,
+                Stafi i Shkollës
+                """, student.getName(), subjectName, academicYear, semester, attendance);
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(to);
+        email.setSubject(subjectName);
+        email.setText(message);
         email.setFrom("noreply@shkolla.com");
 
         mailSender.send(email);
+
     }
 
 

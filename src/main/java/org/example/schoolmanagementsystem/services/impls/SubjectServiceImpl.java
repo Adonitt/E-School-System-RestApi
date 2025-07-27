@@ -8,6 +8,7 @@ import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.UpdateSubjectDto;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.mappers.SubjectMapper;
 import org.example.schoolmanagementsystem.repositories.SubjectRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +39,6 @@ public class SubjectServiceImpl implements SubjectService {
         }
 
         var subject = subjectMapper.fromCreateDto(dto);
-        System.out.println("Subject credits: " + subject.getCredits());
-        System.out.println("Subject totalHours: " + subject.getTotalHours());
 
         subject.setTeachers(teachers);
 
@@ -59,6 +59,7 @@ public class SubjectServiceImpl implements SubjectService {
                 teacher.getSubjects().add(subject);
             }
         }
+        subject.setSemesters(dto.getSemesters());
 
         var savedSubject = subjectRepository.save(subject);
         return subjectMapper.toDto(savedSubject);
@@ -97,6 +98,7 @@ public class SubjectServiceImpl implements SubjectService {
 
         subjectFromDb.setCredits(dto.getCredits());
         subjectFromDb.setTotalHours(dto.getTotalHours());
+        subjectFromDb.setSemesters(dto.getSemesters());
 
         var updated = subjectRepository.save(subjectFromDb);
         return subjectMapper.toUpdateDto(updated);
@@ -119,4 +121,8 @@ public class SubjectServiceImpl implements SubjectService {
         subjectRepository.delete(subject);
     }
 
+
+
+
 }
+

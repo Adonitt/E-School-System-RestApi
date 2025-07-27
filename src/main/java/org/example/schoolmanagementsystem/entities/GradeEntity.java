@@ -46,4 +46,8 @@ public class GradeEntity {
     @JoinColumn(name = "subject_id")
     @ToString.Exclude
     private SubjectEntity subject;
+
+    @Column(name = "attendance_percentage_used")
+    private Double attendancePercentageUsed;
+
 }

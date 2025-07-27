@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.dtos.subject.CreateSubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.UpdateSubjectDto;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.services.interfaces.SubjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubjectController {
     private final SubjectService service;
-
 
     @GetMapping("")
     public ResponseEntity<List<SubjectDto>> getAll() {
@@ -55,5 +55,8 @@ public class SubjectController {
     public UpdateSubjectDto getDefaultUpdateSubject() {
         return new UpdateSubjectDto();
     }
+
+
+
 
 }
