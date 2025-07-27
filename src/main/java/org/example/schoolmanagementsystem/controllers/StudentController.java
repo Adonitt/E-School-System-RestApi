@@ -40,12 +40,6 @@ public class StudentController {
         return ResponseEntity.ok(service.modify(id, dto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeById(@PathVariable Long id) {
-        service.removeById(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/default")
     public CreateStudentDto getDefaultStudent() {
         return new CreateStudentDto();

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.dtos.grade.CRDGradeDto;
 import org.example.schoolmanagementsystem.dtos.grade.UpdateGradeDto;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.services.interfaces.GradeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +66,7 @@ public class GradeController {
     }
 
     @GetMapping("/group-by-semester")
-    public ResponseEntity<Map<String, List<CRDGradeDto>>> groupBySemester() {
+    public ResponseEntity<Map<SemesterEnum, List<CRDGradeDto>>> groupBySemester() {
         return ResponseEntity.ok(gradeService.groupBySemester());
     }
 

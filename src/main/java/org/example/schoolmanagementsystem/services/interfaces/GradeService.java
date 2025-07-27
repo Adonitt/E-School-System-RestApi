@@ -2,7 +2,6 @@ package org.example.schoolmanagementsystem.services.interfaces;
 
 import org.example.schoolmanagementsystem.dtos.grade.CRDGradeDto;
 import org.example.schoolmanagementsystem.dtos.grade.UpdateGradeDto;
-import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
 import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.services.base_services.*;
 
@@ -20,7 +19,7 @@ public interface GradeService extends
 
     Map<String, List<CRDGradeDto>> groupByAcademicYear();
 
-    Map<String, List<CRDGradeDto>> groupBySemester();
+    Map<SemesterEnum, List<CRDGradeDto>> groupBySemester();
 
     Map<String, List<CRDGradeDto>> groupByStudent();
 

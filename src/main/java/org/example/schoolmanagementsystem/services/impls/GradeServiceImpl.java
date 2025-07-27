@@ -5,17 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.schoolmanagementsystem.dtos.grade.CRDGradeDto;
 import org.example.schoolmanagementsystem.dtos.grade.UpdateGradeDto;
-import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
 import org.example.schoolmanagementsystem.entities.AttendanceEntity;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.example.schoolmanagementsystem.enums.SemesterEnum;
+import org.example.schoolmanagementsystem.exceptions.NotTheRightTeacherException;
 import org.example.schoolmanagementsystem.exceptions.StudentCannotBeNotedException;
 import org.example.schoolmanagementsystem.exceptions.StudentHasAlreadyANote;
 import org.example.schoolmanagementsystem.mappers.GradeMapper;
-import org.example.schoolmanagementsystem.mappers.SubjectMapper;
 import org.example.schoolmanagementsystem.repositories.*;
 import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.example.schoolmanagementsystem.services.interfaces.GradeService;
@@ -40,15 +39,20 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public CRDGradeDto add(CRDGradeDto dto) {
-
         StudentEntity student = studentRepository.findById(dto.getStudentId())
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
         SubjectEntity subject = subjectRepository.findById(dto.getSubjectId())
                 .orElseThrow(() -> new EntityNotFoundException("Subject not found"));
 
-        TeacherEntity teacher = teacherRepository.findById(3L)
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+        String teacherEmail = AuthServiceImpl.getLoggedInUserEmail();
+
+        TeacherEntity teacher = teacherRepository.findByEmail(teacherEmail)
+                .orElseThrow(() -> new EntityNotFoundException("Logged-in teacher not found"));
+
+        if (!teacher.getSubjects().contains(subject)) {
+            throw new NotTheRightTeacherException("Teacher does not teach this subject.");
+        }
 
         boolean exists = gradeRepository.existsByStudentAndSubjectAndTeacher(student, subject, teacher);
         if (exists) {
@@ -64,25 +68,31 @@ public class GradeServiceImpl implements GradeService {
                 ? dto.getAttendancePercentageUsed() / 100.0
                 : calculatedAttendance;
 
-        System.out.println("usedAttendance = " + usedAttendance);
-
         if (usedAttendance < 0.6) {
             emailService.sendReexaminationNotification(student, subject, student.getAcademicYear(), student.getCurrentSemester(), calculatedAttendance);
             throw new StudentCannotBeNotedException("Student cannot be noted with less than 60% attendance! He will be given a reexamination!");
         }
 
         GradeEntity grade = new GradeEntity();
+        grade.setSemester(student.getCurrentSemester());
+        grade.setAcademicYear(student.getAcademicYear());
+
         grade.setTeacher(teacher);
         grade.setStudent(student);
         grade.setSubject(subject);
         grade.setGrade(dto.getGrade());
-        grade.setAcademicYear(dto.getAcademicYear());
-        grade.setSemester(dto.getSemester());
         grade.setDateGiven(LocalDate.now());
+
         grade.setAttendancePercentageUsed(usedAttendance);
 
         var savedGrade = gradeRepository.save(grade);
-        emailService.sendGradeNotification(student, savedGrade);
+
+        if (dto.getGrade().getValue() == 5) {
+            emailService.sendReexaminationNotificationDueToGrade(student, subject, student.getAcademicYear(), student.getCurrentSemester(), grade.getGrade());
+        } else {
+            emailService.sendGradeNotification(student, savedGrade);
+        }
+
         return gradeMapper.toDto(savedGrade);
     }
 
@@ -115,7 +125,6 @@ public class GradeServiceImpl implements GradeService {
         }
 
         grade.setGrade(dto.getGrade());
-        grade.setSemester(dto.getSemester());
         grade.setAcademicYear(dto.getAcademicYear());
         grade.setAttendancePercentageUsed(usedAttendance);
 
@@ -147,7 +156,7 @@ public class GradeServiceImpl implements GradeService {
     }
 
     @Override
-    public Map<String, List<CRDGradeDto>> groupBySemester() {
+    public Map<SemesterEnum, List<CRDGradeDto>> groupBySemester() {
         return gradeRepository.findAll().stream()
                 .map(gradeMapper::toDto)
                 .collect(Collectors.groupingBy(CRDGradeDto::getSemester));
@@ -163,10 +172,11 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public Map<String, List<CRDGradeDto>> groupByTeacher() {
         return gradeRepository.findAll().stream()
-                .map(gradeMapper::toDto)
-                .collect(Collectors.groupingBy(CRDGradeDto::getTeacher));
+                .collect(Collectors.groupingBy(
+                        grade -> grade.getTeacher().getEmail(),  // ose grade.getTeacher().getId().toString()
+                        Collectors.mapping(gradeMapper::toDto, Collectors.toList())
+                ));
     }
-
 
 
 }

@@ -4,6 +4,7 @@ package org.example.schoolmanagementsystem.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
@@ -38,7 +39,18 @@ public class SubjectEntity {
     @Column(name = "total_hours", nullable = false)
     private int totalHours;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "subject_semesters", joinColumns = @JoinColumn(name = "subject_id"))
     @Column(name = "semester")
-    private List<SemesterEnum> semesters;
+    private List<SemesterEnum> semester;
+
+    @ManyToMany(mappedBy = "subjects", fetch = FetchType.LAZY)
+    private List<StudentEntity> students;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "subject_class_numbers", joinColumns = @JoinColumn(name = "subject_id"))
+    @Column(name = "class_number")
+    private List<Integer> classNumber;
+
 }

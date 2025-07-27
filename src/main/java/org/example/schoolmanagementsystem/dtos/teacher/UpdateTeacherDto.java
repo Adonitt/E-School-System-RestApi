@@ -79,7 +79,6 @@ public class UpdateTeacherDto {
 
     private QualificationEnum qualification;
 
-    // Lista e lëndëve me IDs (ose DTO të thjeshtë) për update
     private List<Long> subjectIds;
 
     private String photo;

@@ -33,6 +33,8 @@ public class CreateSubjectDto {
     @Min(value = 1, message = "Total hours must be greater than 0")
     private int totalHours;
 
-    private List<SemesterEnum> semesters;
+    private List<SemesterEnum> semester;
+
+    private List<Integer> classNumber;
 
 }

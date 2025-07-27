@@ -4,10 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.schoolmanagementsystem.enums.CitiesEnum;
-import org.example.schoolmanagementsystem.enums.CountryEnum;
-import org.example.schoolmanagementsystem.enums.GenderEnum;
-import org.example.schoolmanagementsystem.enums.GuardianEnum;
+import org.example.schoolmanagementsystem.enums.*;
 
 import java.time.LocalDate;
 
@@ -60,8 +57,7 @@ public class UpdateStudentDto {
     @NotBlank(message = "Academic year is required")
     private String academicYear;
 
-    @NotBlank(message = "Current semester is required")
-    private String currentSemester;
+    private SemesterEnum currentSemester;
 
     private boolean graduated;
 

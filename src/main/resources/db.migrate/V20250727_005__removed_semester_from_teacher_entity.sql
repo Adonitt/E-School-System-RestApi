@@ -1,0 +1,5 @@
+ALTER TABLE teachers_semesters
+DROP
+CONSTRAINT fk_teachers_semesters_on_teacher_entity;
+
+DROP TABLE teachers_semesters CASCADE;

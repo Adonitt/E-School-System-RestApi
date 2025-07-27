@@ -8,6 +8,7 @@ import lombok.*;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.enums.QualificationEnum;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 
 import java.time.LocalDate;
@@ -49,4 +50,5 @@ public class TeacherEntity extends UserBaseInfo {
     @JsonIgnore
     @ToString.Exclude
     private List<GradeEntity> grades;
+
 }

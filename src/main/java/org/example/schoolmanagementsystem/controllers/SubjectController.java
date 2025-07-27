@@ -2,12 +2,16 @@ package org.example.schoolmanagementsystem.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.schoolmanagementsystem.dtos.student.StudentDetailsDto;
 import org.example.schoolmanagementsystem.dtos.subject.CreateSubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.UpdateSubjectDto;
 import org.example.schoolmanagementsystem.enums.SemesterEnum;
+import org.example.schoolmanagementsystem.services.interfaces.StudentService;
 import org.example.schoolmanagementsystem.services.interfaces.SubjectService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubjectController {
     private final SubjectService service;
+    private final StudentService studentService;
 
     @GetMapping("")
     public ResponseEntity<List<SubjectDto>> getAll() {
@@ -30,8 +35,6 @@ public class SubjectController {
 
     @PostMapping("/create")
     public ResponseEntity<CreateSubjectDto> create(@Valid @RequestBody CreateSubjectDto dto) {
-        System.out.println("Credits: " + dto.getCredits());
-        System.out.println("TotalHours: " + dto.getTotalHours());
         return ResponseEntity.ok(service.add(dto));
     }
 
@@ -56,6 +59,11 @@ public class SubjectController {
         return new UpdateSubjectDto();
     }
 
+
+    @GetMapping("/by-semester/{semester}")
+    public List<SubjectDto> getSubjectsBySemester(@PathVariable SemesterEnum semester) {
+        return service.findBySemester(semester);
+    }
 
 
 

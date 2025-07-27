@@ -36,7 +36,6 @@ public class CreateTeacherDto extends UserDto {
 
     private QualificationEnum qualification;
 
-    // Në DTO më mirë vendos List<Long> subjectIds në vend të listës së entiteteve
     private List<Long> subjectIds;
 
     private String photo;

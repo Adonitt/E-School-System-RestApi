@@ -7,8 +7,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.schoolmanagementsystem.entities.AttendanceEntity;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
+import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.enums.GradeEnum;
 import org.example.schoolmanagementsystem.enums.GuardianEnum;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 
 import java.time.LocalDate;
@@ -33,8 +35,9 @@ public class StudentEntity extends UserBaseInfo {
     @Column(name = "academic_year")
     private String academicYear;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "current_semester", length = 20)
-    private String currentSemester;
+    private SemesterEnum currentSemester;
 
     @Column(name = "gpa")
     private double gpa;
@@ -76,5 +79,14 @@ public class StudentEntity extends UserBaseInfo {
 
     @Column(name = "class_number", nullable = false)
     private int classNumber;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_subject",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    private List<SubjectEntity> subjects;
+
 
 }

@@ -2,11 +2,12 @@ package org.example.schoolmanagementsystem.services.impls;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
+import org.example.schoolmanagementsystem.enums.GradeEnum;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.springframework.mail.SimpleMailMessage;
@@ -100,7 +101,7 @@ public class EmailServiceImpl implements EmailService {
                 
                 Me respekt,
                 Stafi i Shkollës
-                """, student.getName(), grade.getSubject().getName(), grade.getGrade(), grade.getAcademicYear(), grade.getSemester(), grade.getDateGiven(), grade.getTeacher().getName() + " " + grade.getTeacher().getSurname(), grade.getAttendancePercentageUsed());
+                """, student.getName(), grade.getSubject().getName(), grade.getGrade().getValue(), grade.getAcademicYear(), grade.getSemester(), grade.getDateGiven(), grade.getTeacher().getName() + " " + grade.getTeacher().getSurname(), grade.getAttendancePercentageUsed());
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(to);
@@ -134,7 +135,7 @@ public class EmailServiceImpl implements EmailService {
                 
                  Me respekt,
                  Stafi i Shkollës
-                """, student.getName(), updatedGrade.getSubject().getName(), updatedGrade.getGrade(), updatedGrade.getAcademicYear(), updatedGrade.getSemester(), LocalDate.now(), updatedGrade.getTeacher().getName() + " " + updatedGrade.getTeacher().getSurname(), updatedGrade.getAttendancePercentageUsed());
+                """, student.getName(), updatedGrade.getSubject().getName(), updatedGrade.getGrade().getValue(), updatedGrade.getAcademicYear(), updatedGrade.getSemester(), LocalDate.now(), updatedGrade.getTeacher().getName() + " " + updatedGrade.getTeacher().getSurname(), updatedGrade.getAttendancePercentageUsed());
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(to);
@@ -145,26 +146,33 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendReexaminationNotification(StudentEntity student, SubjectEntity subject, String academicYear, String semester, Double attendance) {
+    public void sendReexaminationNotification(StudentEntity student, SubjectEntity subject, String academicYear, SemesterEnum semester, double attendance) {
         String to = student.getEmail();
         String subjectName = "Njoftim për Riprovim";
 
         String message = String.format("""
-                Përshëndetje %s,
-                
-                Pjesëmarrja juaj është: %.2f%%
-                
-                Ju njoftojmë se, sipas regjistrimeve të prezencës, pjesëmarrja juaj në lëndën '%s' për vitin akademik %s dhe semestrin %s është më pak se 60%%. Për këtë arsye, nuk plotësoni kriteret për notën dhe do të duhet të merrni pjesë në riprovim për këtë lëndë.
-                
-                Ju lutemi përgatituni dhe kontaktoni administratën ose mësuesin për më shumë informacion mbi datat dhe procedurat e riprovimit.
-                
-                Nëse keni ndonjë pyetje, mos hezitoni të na kontaktoni.
-                
-                Ju urojmë suksese në përgatitje!
-                
-                Me respekt,
-                Stafi i Shkollës
-                """, student.getName(), subjectName, academicYear, semester, attendance);
+                        Përshëndetje %s,
+                        
+                        Pjesëmarrja juaj është: %.2f%%
+                        
+                        Ju njoftojmë se, sipas regjistrimeve të prezencës, pjesëmarrja juaj në lëndën '%s' për vitin akademik %s dhe semestrin %s është më pak se 60%%. Për këtë arsye, nuk plotësoni kriteret për notën dhe do të duhet të merrni pjesë në riprovim për këtë lëndë.
+                        
+                        Ju lutemi përgatituni dhe kontaktoni administratën ose mësuesin për më shumë informacion mbi datat dhe procedurat e riprovimit.
+                        
+                        Nëse keni ndonjë pyetje, mos hezitoni të na kontaktoni.
+                        
+                        Ju urojmë suksese në përgatitje!
+                        
+                        Me respekt,
+                        Stafi i Shkollës
+                        """,
+                student.getName(),      // %s - emri
+                attendance,             // %.2f - pjesëmarrja
+                subject.getName(),      // %s - lënda
+                academicYear,           // %s - viti akademik
+                semester                // %s - semestri
+        );
+
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(to);
@@ -174,6 +182,41 @@ public class EmailServiceImpl implements EmailService {
 
         mailSender.send(email);
 
+    }
+
+    @Override
+    public void sendReexaminationNotificationDueToGrade(StudentEntity student, SubjectEntity subject, String academicYear, SemesterEnum semester, GradeEnum grade) {
+        String to = student.getEmail();
+        String subjectName = "Njoftim për Riprovim";
+
+        String message = String.format("""
+                        Përshëndetje %s,
+                        
+                        Nota juaj për lëndën '%s' për vitin akademik %s dhe semestrin %s është: %d.
+                        
+                        Ju njoftojmë se, sipas rezultateve të vlerësimit, nuk e keni kaluar këtë lëndë dhe do të duhet të merrni pjesë në riprovim.
+                        
+                        Ju lutemi përgatituni dhe kontaktoni administratën ose mësuesin për më shumë informacion mbi datat dhe procedurat e riprovimit.
+                        
+                        Ju urojmë suksese në përgatitje!
+                        
+                        Me respekt,
+                        Stafi i Shkollës
+                        """,
+                student.getName(),
+                subject.getName(),
+                academicYear,
+                semester,
+                grade.getValue()
+        );
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setTo(to);
+        email.setSubject(subjectName);
+        email.setText(message);
+        email.setFrom("noreply@shkolla.com");
+
+        mailSender.send(email);
     }
 
 
@@ -187,7 +230,7 @@ public class EmailServiceImpl implements EmailService {
                 
                 Ju lutem, për arsye sigurie, ndryshoni fjalëkalimin sa më shpejt që të jetë e mundur.
                 
-                Pasi te logirateni ne E-School, ju mund ta ndryshoni fjalëkalimin.
+                Pasi te kyceni në E-School, ju mund ta ndryshoni fjalëkalimin tuaj.
                 
                 Me respekt,
                 Administrata e Shkolles

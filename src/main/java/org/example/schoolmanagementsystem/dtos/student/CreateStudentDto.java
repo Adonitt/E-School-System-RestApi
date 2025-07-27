@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.schoolmanagementsystem.dtos.user.UserDto;
 import org.example.schoolmanagementsystem.enums.GuardianEnum;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
 import java.time.LocalDate;
 
@@ -26,10 +27,6 @@ public class CreateStudentDto extends UserDto {
     @NotNull(message = "Academic year is required")
     @Pattern(regexp = "^[0-9]{4}-[0-9]{4}$", message = "Academic year must follow format YYYY-YYYY")
     private String academicYear;
-
-    @NotNull(message = "Current semester is required")
-    @Pattern(regexp = "^(Fall|Spring|Summer)\\s20\\d{2}$", message = "Semester must be like 'Fall 2024'")
-    private String currentSemester;
 
     private boolean active;
 

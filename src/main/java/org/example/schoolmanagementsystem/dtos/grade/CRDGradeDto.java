@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.schoolmanagementsystem.enums.GradeEnum;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
 @Data
 @NoArgsConstructor
@@ -22,13 +23,9 @@ public class CRDGradeDto {
     @NotNull(message = "Grade is required")
     private GradeEnum grade;
 
-    @NotBlank(message = "Academic year is required")
-    @Size(max = 20, message = "Academic year must be at most 20 characters")
     private String academicYear;
 
-    @NotBlank(message = "Semester is required")
-    @Size(max = 20, message = "Semester must be at most 20 characters")
-    private String semester;
+    private SemesterEnum semester;
 
     private String teacher;
 

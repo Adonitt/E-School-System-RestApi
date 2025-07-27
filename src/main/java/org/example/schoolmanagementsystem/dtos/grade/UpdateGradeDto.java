@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.schoolmanagementsystem.enums.GradeEnum;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
 @Data
 @AllArgsConstructor
@@ -13,6 +14,5 @@ public class UpdateGradeDto {
     private Long studentId;
     private GradeEnum grade;
     private String academicYear;
-    private String semester;
     private Double attendancePercentageUsed;
 }

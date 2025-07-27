@@ -21,6 +21,8 @@ public class SubjectDto {
 
     private int credits;
     private int totalHours;
-    private List<SemesterEnum> semesters;
+    private List<SemesterEnum> semester;
+    private List<Integer> classNumber;
+    private List<Long> students;
 
 }

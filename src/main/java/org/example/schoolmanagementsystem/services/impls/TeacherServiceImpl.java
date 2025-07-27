@@ -3,20 +3,25 @@ package org.example.schoolmanagementsystem.services.impls;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
 import org.example.schoolmanagementsystem.dtos.teacher.CreateTeacherDto;
 import org.example.schoolmanagementsystem.dtos.teacher.TeacherDetailsDto;
 import org.example.schoolmanagementsystem.dtos.teacher.TeacherListingDto;
 import org.example.schoolmanagementsystem.dtos.teacher.UpdateTeacherDto;
+import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.exceptions.*;
 import org.example.schoolmanagementsystem.helpers.FileHelper;
+import org.example.schoolmanagementsystem.mappers.SubjectMapper;
 import org.example.schoolmanagementsystem.mappers.TeacherMapper;
 import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
+import org.example.schoolmanagementsystem.repositories.SubjectRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
 import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.example.schoolmanagementsystem.services.interfaces.TeacherService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +39,12 @@ public class TeacherServiceImpl implements TeacherService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final FileHelper fileHelper;
+    private final SubjectRepository subjectRepository;
+    private final SubjectMapper subjectMapper;
 
     @Override
     public CreateTeacherDto add(CreateTeacherDto dto) {
         validateTeacher(dto);
-
 
         TeacherEntity teacher = mapper.toEntity(dto);
 
@@ -53,7 +59,6 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setCreatedBy(currentUserEmail + " - " + currentUserRole);
         teacher.setModifiedBy(currentUserEmail + " - " + currentUserRole);
         teacher.setRole(RoleEnum.TEACHER);
-
 
         emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
         emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
@@ -154,6 +159,16 @@ public class TeacherServiceImpl implements TeacherService {
     public void removeById(Long id) {
         findById(id);
         repository.deleteById(id);
+    }
+
+
+    public List<SubjectDto> getSubjectsByTeacherEmail(String email) {
+        TeacherEntity teacher = repository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Teacher not found"));
+
+        List<SubjectEntity> subjects = subjectRepository.findAllByTeachersContaining(teacher);
+
+        return subjectMapper.toListingDtoList(subjects);
     }
 
 

@@ -3,10 +3,9 @@ package org.example.schoolmanagementsystem.mappers;
 import org.example.schoolmanagementsystem.dtos.grade.CRDGradeDto;
 import org.example.schoolmanagementsystem.dtos.grade.UpdateGradeDto;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
-import org.example.schoolmanagementsystem.entities.SubjectEntity;
-import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.context.annotation.Primary;
 
 @Mapper(componentModel = "spring")
@@ -16,7 +15,6 @@ public interface GradeMapper extends SimpleMapper<GradeEntity, CRDGradeDto> {
     @Override
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "subjectId", source = "subject.id")
-    @Mapping(target = "teacher", expression = "java(mapTeacherName(entity.getTeacher()))")
     CRDGradeDto toDto(GradeEntity entity);
 
     @Override

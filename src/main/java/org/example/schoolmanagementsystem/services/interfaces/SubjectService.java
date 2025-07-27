@@ -1,5 +1,6 @@
 package org.example.schoolmanagementsystem.services.interfaces;
 
+import org.example.schoolmanagementsystem.dtos.student.StudentDetailsDto;
 import org.example.schoolmanagementsystem.dtos.subject.CreateSubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.UpdateSubjectDto;
@@ -14,4 +15,6 @@ public interface SubjectService extends
         Removable<Long>,
         FindAll<SubjectDto>,
         FindById<SubjectDto, Long> {
+    List<SubjectDto> findBySemester(SemesterEnum semester);
+
 }

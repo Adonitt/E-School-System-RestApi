@@ -7,6 +7,7 @@ import lombok.*;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.example.schoolmanagementsystem.enums.GradeEnum;
+import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
 import java.time.LocalDate;
 
@@ -27,7 +28,7 @@ public class GradeEntity {
 
     private String academicYear;
 
-    private String semester;
+    private SemesterEnum semester;
 
     private LocalDate dateGiven;
 

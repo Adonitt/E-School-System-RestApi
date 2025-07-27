@@ -66,6 +66,16 @@ public class ErrorController {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(NotTheRightTeacherException.class)
+    public ResponseEntity<ErrorResponse> handleNotTheRightTeacherException(NotTheRightTeacherException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(StudentCannotBeNotedException.class)
+    public ResponseEntity<ErrorResponse> handleStudentCannotBeNotedException(StudentCannotBeNotedException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status) {
         ErrorResponse error = new ErrorResponse();
         error.setMessage(message);

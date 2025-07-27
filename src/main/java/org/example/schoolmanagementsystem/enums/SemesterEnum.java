@@ -6,5 +6,11 @@ public enum SemesterEnum {
     SEMESTER_3,
     SEMESTER_4,
     SEMESTER_5,
-    SEMESTER_6
+    SEMESTER_6;
+
+
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }

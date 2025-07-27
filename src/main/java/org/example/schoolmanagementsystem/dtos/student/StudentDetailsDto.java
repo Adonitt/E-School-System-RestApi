@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.schoolmanagementsystem.enums.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,7 +58,7 @@ public class StudentDetailsDto {
 
     private String academicYear;
 
-    private String currentSemester;
+    private SemesterEnum currentSemester;
 
     private double gpa;
 
@@ -82,5 +83,7 @@ public class StudentDetailsDto {
     private List<Long> gradeIds;
 
     private int classNumber;
+
+    private List<Long> subjectIds;
 
 }
