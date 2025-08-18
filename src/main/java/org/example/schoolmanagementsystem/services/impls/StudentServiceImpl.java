@@ -26,6 +26,7 @@ import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.example.schoolmanagementsystem.services.interfaces.StudentService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,8 +47,11 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
 
     @Override
-    public CreateStudentDto add(CreateStudentDto dto) {
+    public CreateStudentDto create(CreateStudentDto dto, MultipartFile photo) {
         validateStudent(dto);
+
+        var filename = "";
+        if (photo != null && !photo.isEmpty()) filename = fileHelper.uploadFile(photo);
 
         var student = mapper.toEntity(dto);
         String encryptedPassword = passwordEncoder.encode(student.getPassword());
@@ -57,6 +61,11 @@ public class StudentServiceImpl implements StudentService {
         student.setActive(true);
         student.setRole(RoleEnum.STUDENT);
         student.setCurrentSemester(SemesterEnum.SEMESTER_1);
+        if (filename.isBlank()) {
+            student.setPhoto("/photo/student.webp");
+        } else {
+            student.setPhoto(filename);
+        }
 
         emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
         emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
@@ -122,11 +131,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public UpdateStudentDto modify(Long id, UpdateStudentDto dto) {
+    public UpdateStudentDto modify(Long id, UpdateStudentDto dto, MultipartFile photo) {
         StudentEntity studentFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Student with id " + id + " does not exist"));
 
-        // Kontrollo nëse personalNumber ekziston te ndonjë student tjetër përveç këtij
+        var filename = "";
+        if (photo != null && !photo.isEmpty()) filename = fileHelper.uploadFile(photo);
+
         boolean personalNumberExistsForOther = repository.existsByPersonalNumber(dto.getPersonalNumber())
                 && !dto.getPersonalNumber().equals(studentFromDb.getPersonalNumber());
 
@@ -158,6 +169,12 @@ public class StudentServiceImpl implements StudentService {
         studentFromDb.setGuardianEmail(dto.getGuardianEmail());
         studentFromDb.setEmergencyContactPhone(dto.getEmergencyContactPhone());
         studentFromDb.setRelationshipToStudent(dto.getRelationshipToStudent());
+
+        if (filename.isBlank()) {
+            studentFromDb.setPhoto(studentFromDb.getPhoto());
+        } else {
+            studentFromDb.setPhoto(filename);
+        }
 
         studentFromDb.setModifiedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         studentFromDb.setModifiedDate(LocalDateTime.now());

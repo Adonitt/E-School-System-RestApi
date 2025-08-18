@@ -9,6 +9,7 @@ import org.example.schoolmanagementsystem.dtos.student.UpdateStudentDto;
 import org.example.schoolmanagementsystem.services.interfaces.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,14 +31,15 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CreateStudentDto> create(@Valid @RequestBody CreateStudentDto dto) {
-        return ResponseEntity.ok(service.add(dto));
+    public ResponseEntity<CreateStudentDto> create(@Valid @RequestPart("dto") CreateStudentDto dto,
+                                                   @RequestPart(value = "photo", required = false) MultipartFile photo) {
+        return ResponseEntity.ok(service.create(dto, photo));
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<UpdateStudentDto> modify(@PathVariable Long id,
-                                                   @Valid @RequestBody UpdateStudentDto dto) {
-        return ResponseEntity.ok(service.modify(id, dto));
+    public ResponseEntity<UpdateStudentDto> modify(@PathVariable Long id, @Valid @RequestPart("dto") UpdateStudentDto dto,
+                                                   @RequestPart(value = "photo",required = false) MultipartFile photo) {
+        return ResponseEntity.ok(service.modify(id, dto, photo));
     }
 
     @GetMapping("/default")

@@ -86,5 +86,6 @@ public abstract class UserBaseInfo {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
+    @Column(name = "photo", length = 255)
     private String photo;
 }

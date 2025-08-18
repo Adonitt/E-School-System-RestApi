@@ -9,6 +9,7 @@ import org.example.schoolmanagementsystem.dtos.administration.UpdateAdminDto;
 import org.example.schoolmanagementsystem.services.interfaces.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,13 +25,19 @@ public class AdminController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AdminDto> create(@Valid @RequestBody AdminDto dto) {
-        return ResponseEntity.ok(service.add(dto));
+    public ResponseEntity<AdminDto> create(
+            @Valid @RequestPart("dto") AdminDto dto,
+            @RequestPart(value = "photo", required = false) MultipartFile file
+    ) {
+        return ResponseEntity.ok(service.create(dto, file));
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<UpdateAdminDto> modify(@PathVariable Long id, @Valid @RequestBody UpdateAdminDto dto) {
-        return ResponseEntity.ok(service.modify(id, dto));
+    public ResponseEntity<UpdateAdminDto> modify(@PathVariable Long id,
+                                                 @Valid @RequestPart("dto") UpdateAdminDto dto,
+                                                 @RequestPart(value = "photo", required = false) MultipartFile file
+    ) {
+        return ResponseEntity.ok(service.modify(id, dto, file));
     }
 
     @GetMapping("/{id}")

@@ -12,6 +12,17 @@ import java.util.UUID;
 @Component
 public class FileHelperImpl implements FileHelper {
 
-
-
+    @Override
+    public String uploadFile(MultipartFile imageFile) {
+        String filename = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+        Path uploadDir = Paths.get("uploads");
+        try {
+            Files.createDirectories(uploadDir);
+            Path imagePath = uploadDir.resolve(filename);
+            Files.write(imagePath, imageFile.getBytes());
+            return "uploads/" + filename;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store image file", e);
+        }
+    }
 }

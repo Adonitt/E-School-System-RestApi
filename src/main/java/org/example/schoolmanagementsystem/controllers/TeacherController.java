@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,13 +38,16 @@ public class TeacherController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CreateTeacherDto> create(@Valid @RequestBody CreateTeacherDto dto) {
-        return ResponseEntity.ok(service.add(dto));
+    public ResponseEntity<CreateTeacherDto> create(@Valid @RequestPart("dto") CreateTeacherDto dto,
+                                                   @RequestPart(value = "photo",required = false) MultipartFile photo) {
+        return ResponseEntity.ok(service.create(dto, photo));
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<UpdateTeacherDto> modify(@PathVariable Long id, @Valid @RequestBody UpdateTeacherDto dto) {
-        return ResponseEntity.ok(service.modify(id, dto));
+    public ResponseEntity<UpdateTeacherDto> modify(@PathVariable Long id,
+                                                   @Valid @RequestPart("dto") UpdateTeacherDto dto,
+                                                   @RequestPart(value = "photo",required = false) MultipartFile photo) {
+        return ResponseEntity.ok(service.modify(id, dto, photo));
     }
 
     @DeleteMapping("/{id}")

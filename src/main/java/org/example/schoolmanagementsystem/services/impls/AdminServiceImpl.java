@@ -21,6 +21,7 @@ import org.example.schoolmanagementsystem.services.interfaces.AdminService;
 import org.example.schoolmanagementsystem.services.interfaces.EmailService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,8 +38,13 @@ public class AdminServiceImpl implements AdminService {
     private final FileHelper fileHelper;
 
     @Override
-    public AdminDto add(AdminDto dto) {
+    public AdminDto create(AdminDto dto, MultipartFile photo) {
         validateAdmin(dto);
+
+        var filename = "";
+
+        if (photo != null && !photo.isEmpty()) filename = fileHelper.uploadFile(photo);
+
 
         AdminEntity admin = mapper.toEntity(dto);
 
@@ -48,6 +54,13 @@ public class AdminServiceImpl implements AdminService {
         admin.setCreatedDate(LocalDateTime.now());
         admin.setCreatedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         admin.setRole(RoleEnum.ADMINISTRATOR);
+
+
+        if (filename.isBlank()) {
+            admin.setPhoto("/photo/admin.png");
+        } else {
+            admin.setPhoto(filename);
+        }
 
         emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
         emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
@@ -110,13 +123,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public UpdateAdminDto modify(Long id, UpdateAdminDto dto) {
+    public UpdateAdminDto modify(Long id, UpdateAdminDto dto, MultipartFile photo) {
         AdminEntity adminFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Admin with id " + id + " does not exist"));
 
-        if (dto.getPhoto() != null && !dto.getPhoto().isEmpty()) {
-            adminFromDb.setPhoto(dto.getPhoto());
-        }
+        var filename = "";
+        if (photo != null && !photo.isEmpty()) filename = fileHelper.uploadFile(photo);
 
         adminFromDb.setPersonalNumber(dto.getPersonalNumber());
         adminFromDb.setName(dto.getName());
@@ -134,6 +146,11 @@ public class AdminServiceImpl implements AdminService {
         adminFromDb.setRole(dto.getRole());
         adminFromDb.setActive(dto.isActive());
 
+        if (filename.isBlank()) {
+            adminFromDb.setPhoto(adminFromDb.getPhoto());
+        } else {
+            adminFromDb.setPhoto(filename);
+        }
 
         adminFromDb.setModifiedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         adminFromDb.setModifiedDate(LocalDateTime.now());

@@ -24,6 +24,7 @@ import org.example.schoolmanagementsystem.services.interfaces.TeacherService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,8 +44,11 @@ public class TeacherServiceImpl implements TeacherService {
     private final SubjectMapper subjectMapper;
 
     @Override
-    public CreateTeacherDto add(CreateTeacherDto dto) {
+    public CreateTeacherDto create(CreateTeacherDto dto, MultipartFile photo) {
         validateTeacher(dto);
+
+        var filename = "";
+        if (photo != null && !photo.isEmpty()) filename = fileHelper.uploadFile(photo);
 
         TeacherEntity teacher = mapper.toEntity(dto);
 
@@ -59,6 +63,12 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setCreatedBy(currentUserEmail + " - " + currentUserRole);
         teacher.setModifiedBy(currentUserEmail + " - " + currentUserRole);
         teacher.setRole(RoleEnum.TEACHER);
+
+        if (filename.isBlank()) {
+            teacher.setPhoto("/photo/teacher.webp");
+        } else {
+            teacher.setPhoto(filename);
+        }
 
         emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
         emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
@@ -126,10 +136,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public UpdateTeacherDto modify(Long id, UpdateTeacherDto dto) {
+    public UpdateTeacherDto modify(Long id, UpdateTeacherDto dto, MultipartFile photo) {
         TeacherEntity teacherFromDb = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher with id " + id + " does not exist"));
 
+        var filename = "";
+        if (photo != null && !photo.isEmpty()) filename = fileHelper.uploadFile(photo);
 
         teacherFromDb.setPersonalNumber(dto.getPersonalNumber());
         teacherFromDb.setName(dto.getName());
@@ -150,6 +162,11 @@ public class TeacherServiceImpl implements TeacherService {
         teacherFromDb.setSalary(dto.getSalary());
         teacherFromDb.setEmploymentDate(dto.getEmploymentDate());
         teacherFromDb.setQualification(dto.getQualification());
+        if (filename.isBlank()) {
+            teacherFromDb.setPhoto(teacherFromDb.getPhoto());
+        } else {
+            teacherFromDb.setPhoto(filename);
+        }
 
         var updatedEntity = repository.save(teacherFromDb);
         return mapper.toUpdateDto(updatedEntity);
