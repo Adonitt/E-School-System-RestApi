@@ -44,48 +44,40 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
-                                .anyRequest().authenticated()
+                        // -------------------- PUBLIC --------------------
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/forgot-password").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/enums/**").permitAll()
 
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/login").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/users/forgot-password").permitAll()
-//                        .requestMatchers("/uploads/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "api/enums/**").permitAll()
-//
-//                        .requestMatchers(HttpMethod.PUT, "/api/v1/auth/change-password").authenticated()
-//
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/users/profile").hasAnyAuthority(
-//                                PermissionEnum.STUDENT_READ.name(),
-//                                PermissionEnum.ADMIN_READ.name(),
-//                                PermissionEnum.TEACHER_READ.name())
-//
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasAuthority(PermissionEnum.ADMIN_READ.name())
-//
-//                        .requestMatchers(HttpMethod.PUT, "/api/v1/parties/{id}").hasAuthority(PermissionEnum.ADMIN_UPDATE.name())
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/parties").hasAuthority(PermissionEnum.ADMIN_CREATE.name())
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/parties/**").permitAll()
-//
-//                        .requestMatchers(HttpMethod.PUT, "/api/v1/candidates/{id}").hasAuthority(PermissionEnum.ADMIN_UPDATE.name())
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/candidates/**").permitAll()
-//
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/votes/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/votes/**").permitAll()
-//
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/**").hasAuthority(PermissionEnum.ADMIN_READ.name())
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/**").hasAuthority(PermissionEnum.ADMIN_CREATE.name())
-//                        .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority(PermissionEnum.ADMIN_UPDATE.name())
-//                        .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasAuthority(PermissionEnum.ADMIN_DELETE.name())
+                        // -------------------- PASSWORD CHANGE --------------------
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/auth/change-password").authenticated()
+
+                        // -------------------- ADMIN (FULL ACCESS) --------------------
+                        .requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasRole("ADMIN")
+
+                        // -------------------- TEACHER --------------------
+                        .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/teacher/**").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/grades/**").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/grades/**").hasRole("TEACHER")
+
+                        // -------------------- STUDENT --------------------
+                        .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/teacher/**").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/student/**").hasRole("STUDENT")
+
+                        .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
