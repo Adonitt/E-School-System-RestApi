@@ -71,3 +71,6 @@ Custom exceptions and global error handling
 Forgot password functionality with token-based reset via email
 
 User-specific communication if needed
+
+Vue.js Repo:
+https://github.com/Adonitt/E-School-System-Vue-Js
