@@ -9,6 +9,7 @@ import org.example.schoolmanagementsystem.dtos.administration.AdminListingDto;
 import org.example.schoolmanagementsystem.dtos.administration.UpdateAdminDto;
 import org.example.schoolmanagementsystem.entities.administration.AdminEntity;
 import org.example.schoolmanagementsystem.enums.RoleEnum;
+import org.example.schoolmanagementsystem.exceptions.AdminNumberAlreadyExists;
 import org.example.schoolmanagementsystem.exceptions.EmailExistsException;
 import org.example.schoolmanagementsystem.exceptions.InvalidFormatException;
 import org.example.schoolmanagementsystem.exceptions.PersonalNumberLengthException;
@@ -36,6 +37,7 @@ public class AdminServiceImpl implements AdminService {
     private final StudentRepository studentRepository;
     private final EmailService emailService;
     private final FileHelper fileHelper;
+    private final AdminRepository adminRepository;
 
     @Override
     public AdminDto create(AdminDto dto, MultipartFile photo) {
@@ -52,12 +54,13 @@ public class AdminServiceImpl implements AdminService {
         admin.setPassword(encryptedPassword);
 
         admin.setCreatedDate(LocalDateTime.now());
+
         admin.setCreatedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
+
         admin.setRole(RoleEnum.ADMINISTRATOR);
-
-
+        admin.setAcceptTermsAndConditions(true);
         if (filename.isBlank()) {
-            admin.setPhoto("/photo/admin.png");
+            admin.setPhoto("b120c6a6-5948-404e-a9e5-5a198d9ff566_admin.png");
         } else {
             admin.setPhoto(filename);
         }
@@ -82,6 +85,10 @@ public class AdminServiceImpl implements AdminService {
             throw new EmailExistsException("A user with this email already exists.");
         }
 
+        if (adminRepository.existsByAdminNumber(dto.getAdminNumber())) {
+            throw new AdminNumberAlreadyExists("This admin number already exists!");
+        }
+
         if (!dto.getPersonalNumber().matches("\\d{10}")) {
             throw new InvalidFormatException("Personal number must contain only digits.");
         }
@@ -95,10 +102,6 @@ public class AdminServiceImpl implements AdminService {
         }
         if (dto.getDepartment() == null) {
             throw new ValidationException("Department is required.");
-        }
-
-        if (!dto.isAcceptTermsAndConditions()) {
-            throw new ValidationException("You must accept the terms and conditions.");
         }
 
         if (dto.getRole() != RoleEnum.ADMINISTRATOR) {
@@ -145,6 +148,7 @@ public class AdminServiceImpl implements AdminService {
         adminFromDb.setAddress(dto.getAddress());
         adminFromDb.setRole(dto.getRole());
         adminFromDb.setActive(dto.isActive());
+        adminFromDb.setAdminNumber(dto.getAdminNumber());
 
         if (filename.isBlank()) {
             adminFromDb.setPhoto(adminFromDb.getPhoto());

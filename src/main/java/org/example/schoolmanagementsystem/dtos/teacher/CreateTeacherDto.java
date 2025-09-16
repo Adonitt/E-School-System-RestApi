@@ -17,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateTeacherDto extends UserDto {
 
-    // Id është Long, nuk ka kuptim @Size mbi Long, hiqe atë
     private Long id;
 
     @NotNull(message = "Specialization is required")

@@ -28,6 +28,7 @@ public class GradeEntity {
 
     private String academicYear;
 
+    @Enumerated(EnumType.STRING)
     private SemesterEnum semester;
 
     private LocalDate dateGiven;

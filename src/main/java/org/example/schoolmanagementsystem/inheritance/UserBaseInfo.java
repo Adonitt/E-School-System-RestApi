@@ -15,11 +15,11 @@ import org.example.schoolmanagementsystem.enums.RoleEnum;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-// HEQUR @Data
-@Getter // Shtuar
-@Setter // Shtuar
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
 @MappedSuperclass
 @SuperBuilder
 public abstract class UserBaseInfo {

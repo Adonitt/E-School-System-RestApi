@@ -2,13 +2,11 @@
 package org.example.schoolmanagementsystem.entities.administration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-// import com.fasterxml.jackson.annotation.JsonManagedReference; // Kjo mund të hiqet nëse përdoret vetëm @JsonIgnore
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.enums.QualificationEnum;
-import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 
 import java.time.LocalDate;
@@ -19,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "teachers")
+
 public class TeacherEntity extends UserBaseInfo {
 
     @Column(name = "specialization", nullable = false, length = 100)
@@ -39,7 +38,7 @@ public class TeacherEntity extends UserBaseInfo {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "teacher_subject",
-            joinColumns = @JoinColumn(name = "teacher_id"),
+            joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
     @JsonIgnore
@@ -50,5 +49,4 @@ public class TeacherEntity extends UserBaseInfo {
     @JsonIgnore
     @ToString.Exclude
     private List<GradeEntity> grades;
-
 }

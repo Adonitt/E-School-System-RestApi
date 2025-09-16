@@ -20,6 +20,9 @@ public class AppUserDetails implements UserDetails {
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
     private final Long id;
+    private final String role;
+    private final String fullName;
+
 
     // Constructor për AdminEntity
     public AppUserDetails(AdminEntity admin) {
@@ -27,22 +30,29 @@ public class AppUserDetails implements UserDetails {
         this.password = admin.getPassword();
         this.authorities = List.of(new SimpleGrantedAuthority(admin.getRole().name()));
         this.id = admin.getId();
+        this.role = admin.getRole().name();
+        this.fullName = admin.getName() + " " + admin.getSurname();
+
     }
 
-    // Constructor për TeacherEntity
+    // Teacher
     public AppUserDetails(TeacherEntity teacher) {
         this.email = teacher.getEmail();
         this.password = teacher.getPassword();
         this.authorities = List.of(new SimpleGrantedAuthority(teacher.getRole().name()));
         this.id = teacher.getId();
+        this.role = teacher.getRole().name();
+        this.fullName = teacher.getName() + " " + teacher.getSurname();
     }
 
-    // Constructor për StudentEntity
+    // Student
     public AppUserDetails(StudentEntity student) {
         this.email = student.getEmail();
         this.password = student.getPassword();
         this.authorities = List.of(new SimpleGrantedAuthority(student.getRole().name()));
         this.id = student.getId();
+        this.role = student.getRole().name();
+        this.fullName = student.getName() + " " + student.getSurname();
     }
 
     @Override
@@ -79,7 +89,6 @@ public class AppUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 
     public Long getId() {
         return id;

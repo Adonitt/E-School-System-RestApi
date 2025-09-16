@@ -48,36 +48,36 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
                         // -------------------- PUBLIC --------------------
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/forgot-password").permitAll()
-                        .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/enums/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/login").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/users/forgot-password").permitAll()
+//                        .requestMatchers("/uploads/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/enums/**").permitAll()
+//
+//                        // -------------------- PASSWORD CHANGE --------------------
+//                        .requestMatchers(HttpMethod.PUT, "/api/v1/auth/change-password").authenticated()
+//
+//                        // -------------------- ADMIN (FULL ACCESS) --------------------
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/**").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasRole("ADMIN")
+//
+//                        // -------------------- TEACHER --------------------
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("TEACHER")
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/teacher/**").hasRole("TEACHER")
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/grades/**").hasRole("TEACHER")
+//                        .requestMatchers(HttpMethod.PUT, "/api/v1/grades/**").hasRole("TEACHER")
+//
+//                        // -------------------- STUDENT --------------------
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("STUDENT")
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/teacher/**").hasRole("STUDENT")
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/student/**").hasRole("STUDENT")
 
-                        // -------------------- PASSWORD CHANGE --------------------
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/auth/change-password").authenticated()
-
-                        // -------------------- ADMIN (FULL ACCESS) --------------------
-                        .requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasRole("ADMIN")
-
-                        // -------------------- TEACHER --------------------
-                        .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/teacher/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/grades/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/grades/**").hasRole("TEACHER")
-
-                        // -------------------- STUDENT --------------------
-                        .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("STUDENT")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/teacher/**").hasRole("STUDENT")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/student/**").hasRole("STUDENT")
-
-                        .anyRequest().authenticated()
+//                        .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -91,7 +91,8 @@ public class SecurityConfig {
                                                  TeacherRepository teacherRepository,
                                                  StudentRepository studentRepository,
                                                  PasswordEncoder passwordEncoder) {
-        String email = "adonit.halili@gmail.com";
+
+        String email = "adonit.halili@teacher.com";
 
         // Kontrollo nëse admin ekziston, nëse jo krijo të ri
         adminRepository.findByEmail(email).orElseGet(() -> {
@@ -106,16 +107,17 @@ public class SecurityConfig {
                     .country(CountryEnum.KOSOVO)
                     .postalCode("10000")
                     .phoneNumber("+38344123456")
-                    .role(RoleEnum.ADMINISTRATOR)
+                    .role(RoleEnum.TEACHER)
                     .notes("Initial system admin")
                     .email(email)
-                    .password(passwordEncoder.encode("Admin123.")) // perdor passwordEncoder te injektuar
+                    .password(passwordEncoder.encode("Admin1234."))
                     .createdBy("System")
                     .createdDate(LocalDateTime.now())
                     .active(true)
                     .acceptTermsAndConditions(true)
                     .department(DepartmentEnum.IT)
                     .adminNumber(1L)
+                    .photo("b120c6a6-5948-404e-a9e5-5a198d9ff566_admin.png")
                     .build();
             return adminRepository.save(newAdmin);
         });

@@ -20,7 +20,7 @@ public class FileHelperImpl implements FileHelper {
             Files.createDirectories(uploadDir);
             Path imagePath = uploadDir.resolve(filename);
             Files.write(imagePath, imageFile.getBytes());
-            return "uploads/" + filename;
+            return filename;
         } catch (IOException e) {
             throw new RuntimeException("Failed to store image file", e);
         }

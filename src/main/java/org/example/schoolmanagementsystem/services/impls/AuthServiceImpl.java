@@ -14,6 +14,7 @@ import org.example.schoolmanagementsystem.inheritance.UserBaseInfo;
 import org.example.schoolmanagementsystem.repositories.AdminRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
+import org.example.schoolmanagementsystem.security.AppUserDetails;
 import org.example.schoolmanagementsystem.security.AppUserDetailsService;
 import org.example.schoolmanagementsystem.services.interfaces.AuthService;
 import org.example.schoolmanagementsystem.services.interfaces.EmailService;
@@ -72,10 +73,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        AppUserDetails appUser = (AppUserDetails) userDetails;
+
+        claims.put("id", appUser.getId());
+        claims.put("role", appUser.getRole());
+        claims.put("email", appUser.getUsername());
+        claims.put("fullName", appUser.getFullName());
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername()) // kjo është email
+                .setSubject(userDetails.getUsername()) // email
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)

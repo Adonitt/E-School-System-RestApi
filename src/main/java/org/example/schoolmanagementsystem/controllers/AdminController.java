@@ -24,13 +24,14 @@ public class AdminController {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = {"multipart/form-data"})
     public ResponseEntity<AdminDto> create(
             @Valid @RequestPart("dto") AdminDto dto,
             @RequestPart(value = "photo", required = false) MultipartFile file
     ) {
         return ResponseEntity.ok(service.create(dto, file));
     }
+
 
     @PutMapping("/modify/{id}")
     public ResponseEntity<UpdateAdminDto> modify(@PathVariable Long id,

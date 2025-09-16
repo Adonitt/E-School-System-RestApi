@@ -76,6 +76,11 @@ public class ErrorController {
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AdminNumberAlreadyExists.class)
+    public ResponseEntity<ErrorResponse> handleAdminNumberAlreadyExists(AdminNumberAlreadyExists ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status) {
         ErrorResponse error = new ErrorResponse();
         error.setMessage(message);

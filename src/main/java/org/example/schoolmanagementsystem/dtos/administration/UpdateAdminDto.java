@@ -65,6 +65,8 @@ public class UpdateAdminDto {
     @NotNull(message = "Department is required")
     private DepartmentEnum department;
 
+    private Long adminNumber;
+
     private boolean active;
 
     private String photo;

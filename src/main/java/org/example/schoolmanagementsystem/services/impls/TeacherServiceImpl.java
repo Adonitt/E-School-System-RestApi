@@ -58,14 +58,15 @@ public class TeacherServiceImpl implements TeacherService {
         String currentUserEmail = AuthServiceImpl.getLoggedInUserEmail();
         String currentUserRole = AuthServiceImpl.getLoggedInUserRole();
 
+        teacher.setRole(RoleEnum.TEACHER);
+
         teacher.setCreatedDate(LocalDateTime.now());
         teacher.setModifiedDate(LocalDateTime.now());
         teacher.setCreatedBy(currentUserEmail + " - " + currentUserRole);
         teacher.setModifiedBy(currentUserEmail + " - " + currentUserRole);
-        teacher.setRole(RoleEnum.TEACHER);
 
         if (filename.isBlank()) {
-            teacher.setPhoto("/photo/teacher.webp");
+            teacher.setPhoto("7a407957-d48b-40fd-a78c-2f9456abf516_teacher.webp");
         } else {
             teacher.setPhoto(filename);
         }

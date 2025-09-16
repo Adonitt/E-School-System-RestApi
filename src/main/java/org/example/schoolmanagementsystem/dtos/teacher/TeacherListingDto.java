@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.schoolmanagementsystem.enums.CitiesEnum;
+import org.example.schoolmanagementsystem.enums.CountryEnum;
 import org.example.schoolmanagementsystem.enums.RoleEnum;
 
 import java.time.LocalDate;
@@ -15,15 +16,17 @@ public class TeacherListingDto {
 
     private Long id;
 
-    private String personalNumber;
+    private String photo;
 
     private String name;
 
     private String surname;
 
-    private LocalDate birthDate;
+    private String email;
 
-    private CitiesEnum city;
+    private String specialization;
 
-    private RoleEnum role;
+    private CountryEnum country;
+
+
 }

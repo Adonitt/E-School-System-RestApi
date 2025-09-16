@@ -15,4 +15,5 @@ public interface AdminRepository extends JpaRepository<AdminEntity, Long> {
     Optional<AdminEntity> findByEmail(String email);
 
 
+    boolean existsByAdminNumber(Long adminNumber);
 }
