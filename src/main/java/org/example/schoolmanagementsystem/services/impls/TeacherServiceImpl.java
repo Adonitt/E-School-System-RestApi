@@ -71,8 +71,8 @@ public class TeacherServiceImpl implements TeacherService {
             teacher.setPhoto(filename);
         }
 
-        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
-        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
+//        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
+//        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
 
         var savedEntity = repository.save(teacher);
         return mapper.toDto(savedEntity);
@@ -116,9 +116,7 @@ public class TeacherServiceImpl implements TeacherService {
             throw new MissingFieldException("Specialization is required.");
         }
 
-        if (dto.getSalary() < 300 || dto.getSalary() > 10000) {
-            throw new InvalidDataException("Salary must be between 300 and 10,000.");
-        }
+
     }
 
     @Override
@@ -160,7 +158,6 @@ public class TeacherServiceImpl implements TeacherService {
 
         teacherFromDb.setSpecialization(dto.getSpecialization());
         teacherFromDb.setYearsOfExperience(dto.getYearsOfExperience());
-        teacherFromDb.setSalary(dto.getSalary());
         teacherFromDb.setEmploymentDate(dto.getEmploymentDate());
         teacherFromDb.setQualification(dto.getQualification());
         if (filename.isBlank()) {

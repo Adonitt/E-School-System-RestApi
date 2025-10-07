@@ -26,8 +26,6 @@ public class TeacherEntity extends UserBaseInfo {
     @Column(name = "years_of_experience", nullable = false)
     private int yearsOfExperience;
 
-    @Column(name = "salary")
-    private double salary;
 
     @Column(name = "employment_date", nullable = false)
     private LocalDate employmentDate;

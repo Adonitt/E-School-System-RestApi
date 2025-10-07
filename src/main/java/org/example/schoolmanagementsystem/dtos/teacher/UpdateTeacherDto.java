@@ -52,7 +52,6 @@ public class UpdateTeacherDto {
 
     @NotNull(message = "Phone number is required")
     @NotBlank(message = "Phone number is required")
-    @Size(min = 10, max = 20, message = "Phone number must be between 10 and 20 characters long")
     private String phoneNumber;
 
     private RoleEnum role;
@@ -71,8 +70,6 @@ public class UpdateTeacherDto {
     @PositiveOrZero(message = "Years of experience must be a non-negative number")
     private int yearsOfExperience;
 
-    @PositiveOrZero(message = "Salary must be a non-negative number")
-    private double salary;
 
     @PastOrPresent(message = "Employment date must be in the past or present")
     private LocalDate employmentDate;

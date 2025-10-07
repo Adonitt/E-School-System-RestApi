@@ -42,8 +42,6 @@ public class TeacherDetailsDto {
 
     private String email;
 
-    private String password;
-
     private String createdBy;
 
     private LocalDateTime createdDate;
@@ -58,13 +56,12 @@ public class TeacherDetailsDto {
 
     private int yearsOfExperience;
 
-    private double salary;
+
 
     private LocalDate employmentDate;
 
     private QualificationEnum qualification;
 
-    // Në vend të entiteteve, lista e IDs ose DTO të thjeshtë e lëndëve
     private List<Long> subjectIds;
 
 }

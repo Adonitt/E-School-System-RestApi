@@ -67,8 +67,8 @@ public class StudentServiceImpl implements StudentService {
             student.setPhoto(filename);
         }
 
-        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
-        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
+//        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
+//        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
 
         var savedStudent = repository.save(student);
         return mapper.toDto(savedStudent);
@@ -178,6 +178,8 @@ public class StudentServiceImpl implements StudentService {
 
         studentFromDb.setModifiedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         studentFromDb.setModifiedDate(LocalDateTime.now());
+
+        // TODO: send update email
 
         var savedStudent = repository.save(studentFromDb);
         return mapper.toUpdateDto(savedStudent);

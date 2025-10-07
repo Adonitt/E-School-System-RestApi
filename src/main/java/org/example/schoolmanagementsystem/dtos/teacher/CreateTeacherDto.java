@@ -25,9 +25,7 @@ public class CreateTeacherDto extends UserDto {
 
     @PositiveOrZero(message = "Years of experience must be a non-negative number")
     private int yearsOfExperience;
-
-    @PositiveOrZero(message = "Salary must be a non-negative number")
-    private double salary;
+;
 
     @PastOrPresent(message = "Employment date must be in the past or present")
     @NotNull(message = "Employment date is required")

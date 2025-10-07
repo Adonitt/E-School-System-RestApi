@@ -87,11 +87,11 @@ public class GradeServiceImpl implements GradeService {
 
         var savedGrade = gradeRepository.save(grade);
 
-        if (dto.getGrade().getValue() == 5) {
-            emailService.sendReexaminationNotificationDueToGrade(student, subject, student.getAcademicYear(), student.getCurrentSemester(), grade.getGrade());
-        } else {
-            emailService.sendGradeNotification(student, savedGrade);
-        }
+//        if (dto.getGrade().getValue() == 5) {
+//            emailService.sendReexaminationNotificationDueToGrade(student, subject, student.getAcademicYear(), student.getCurrentSemester(), grade.getGrade());
+//        } else {
+//            emailService.sendGradeNotification(student, savedGrade);
+//        }
 
         return gradeMapper.toDto(savedGrade);
     }
@@ -129,7 +129,7 @@ public class GradeServiceImpl implements GradeService {
         grade.setAttendancePercentageUsed(usedAttendance);
 
         var savedGrade = gradeRepository.save(grade);
-        emailService.sendGradeUpdateNotification(grade.getStudent(), savedGrade);
+//        emailService.sendGradeUpdateNotification(grade.getStudent(), savedGrade);
         return gradeMapper.toUpdateDto(savedGrade);
     }
 
