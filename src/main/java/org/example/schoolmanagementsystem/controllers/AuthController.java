@@ -34,7 +34,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/change-password")
+    @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordDto request) {
         String email = AuthServiceImpl.getLoggedInUserEmail();
         service.changePassword(request, email);

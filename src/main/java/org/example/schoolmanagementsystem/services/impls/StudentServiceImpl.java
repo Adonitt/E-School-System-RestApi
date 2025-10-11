@@ -14,7 +14,6 @@ import org.example.schoolmanagementsystem.enums.RoleEnum;
 import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.exceptions.EmailExistsException;
 import org.example.schoolmanagementsystem.exceptions.InvalidFormatException;
-import org.example.schoolmanagementsystem.exceptions.NotTheRightTeacherException;
 import org.example.schoolmanagementsystem.exceptions.PersonalNumberLengthException;
 import org.example.schoolmanagementsystem.helpers.FileHelper;
 import org.example.schoolmanagementsystem.mappers.StudentMapper;
@@ -55,14 +54,17 @@ public class StudentServiceImpl implements StudentService {
 
         var student = mapper.toEntity(dto);
         String encryptedPassword = passwordEncoder.encode(student.getPassword());
+
         student.setPassword(encryptedPassword);
         student.setCreatedBy(AuthServiceImpl.getLoggedInUserEmail() + " - " + AuthServiceImpl.getLoggedInUserRole());
         student.setCreatedDate(LocalDateTime.now());
         student.setActive(true);
         student.setRole(RoleEnum.STUDENT);
         student.setCurrentSemester(SemesterEnum.SEMESTER_1);
+        student.setRegisteredDate(LocalDate.now());
+
         if (filename.isBlank()) {
-            student.setPhoto("/photo/student.webp");
+            student.setPhoto("c65d7951-efc1-48ba-80aa-08f8bb27e688_student.webp");
         } else {
             student.setPhoto(filename);
         }
@@ -79,13 +81,9 @@ public class StudentServiceImpl implements StudentService {
             throw new ValidationException("Passwords do not match.");
         }
 
-        boolean emailExists = teacherRepository.existsByEmail(dto.getEmail())
-                || repository.existsByEmail(dto.getEmail())
-                || adminRepository.existsByEmail(dto.getEmail());
+        boolean emailExists = teacherRepository.existsByEmail(dto.getEmail()) || repository.existsByEmail(dto.getEmail()) || adminRepository.existsByEmail(dto.getEmail());
 
-        boolean personalNumberExists = teacherRepository.existsByPersonalNumber(dto.getPersonalNumber())
-                || repository.existsByPersonalNumber(dto.getPersonalNumber())
-                || adminRepository.existsByPersonalNumber(dto.getPersonalNumber());
+        boolean personalNumberExists = teacherRepository.existsByPersonalNumber(dto.getPersonalNumber()) || repository.existsByPersonalNumber(dto.getPersonalNumber()) || adminRepository.existsByPersonalNumber(dto.getPersonalNumber());
 
         if (personalNumberExists) {
             throw new PersonalNumberLengthException("A user with this personal number already exists.");
@@ -132,17 +130,26 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public UpdateStudentDto modify(Long id, UpdateStudentDto dto, MultipartFile photo) {
-        StudentEntity studentFromDb = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Student with id " + id + " does not exist"));
+        StudentEntity studentFromDb = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student with id " + id + " does not exist"));
 
         var filename = "";
         if (photo != null && !photo.isEmpty()) filename = fileHelper.uploadFile(photo);
 
-        boolean personalNumberExistsForOther = repository.existsByPersonalNumber(dto.getPersonalNumber())
-                && !dto.getPersonalNumber().equals(studentFromDb.getPersonalNumber());
+        boolean personalNumberExistsForOther = repository.existsByPersonalNumber(dto.getPersonalNumber()) && !dto.getPersonalNumber().equals(studentFromDb.getPersonalNumber());
 
         if (personalNumberExistsForOther) {
             throw new ValidationException("Personal number already used by another student");
+        }
+        if (dto.getBirthDate().isAfter(LocalDate.now().minusYears(18))) {
+            throw new ValidationException("Student must be at least 18 years old.");
+        }
+
+        if (dto.getEmail() != null && dto.getEmail().equalsIgnoreCase(dto.getGuardianEmail())) {
+            throw new ValidationException("Guardian email must differ from student email.");
+        }
+
+        if (!dto.getAcademicYear().matches("^[0-9]{4}-[0-9]{4}$")) {
+            throw new ValidationException("Academic year must be in format YYYY-YYYY.");
         }
 
         studentFromDb.setPersonalNumber(dto.getPersonalNumber());
@@ -188,19 +195,14 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDetailsDto> getStudentsByClass(int classNumber) {
-        return repository.findByClassNumber(classNumber)
-                .stream()
-                .map(mapper::toDetailsDto)
-                .collect(Collectors.toList());
+        return repository.findByClassNumber(classNumber).stream().map(mapper::toDetailsDto).collect(Collectors.toList());
     }
 
     @Override
     public List<StudentDetailsDto> getStudentsForTeacherAndSubject(String teacherEmail, Long subjectId) {
-        TeacherEntity teacher = teacherRepository.findByEmail(teacherEmail)
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+        TeacherEntity teacher = teacherRepository.findByEmail(teacherEmail).orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
 
-        SubjectEntity subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new EntityNotFoundException("Subject not found"));
+        SubjectEntity subject = subjectRepository.findById(subjectId).orElseThrow(() -> new EntityNotFoundException("Subject not found"));
 
         if (!teacher.getSubjects().contains(subject)) {
             throw new ValidationException("Teacher does not teach this subject");
@@ -211,6 +213,31 @@ public class StudentServiceImpl implements StudentService {
         List<StudentEntity> students = repository.findByCurrentSemesterIn(semesters);
 
         return studentMapper.toDtoList(students);
+    }
+
+    @Override
+    public String deactivateStudent(Long id) {
+        StudentEntity student = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        if (!student.isActive()) {
+            return "Student is already deactivated";
+        }
+        student.setActive(false);
+        repository.save(student);
+
+        return "Student deactivated successfully";
+    }
+
+    @Override
+    public String activateStudent(Long id) {
+        StudentEntity student = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found!"));
+
+        if (student.isActive()) {
+            return "Student is already active!";
+        }
+        student.setActive(true);
+        repository.save(student);
+        return "Student activated successfully!";
+
     }
 
 

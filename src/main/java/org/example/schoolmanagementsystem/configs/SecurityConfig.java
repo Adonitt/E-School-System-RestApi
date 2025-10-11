@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -48,7 +46,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.PUT, "/api/v1/auth/change-password").authenticated()
+                                .anyRequest().permitAll()
                         // -------------------- PUBLIC --------------------
 //                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/login").permitAll()
@@ -97,7 +96,7 @@ public class SecurityConfig {
         // Kontrollo nëse admin ekziston, nëse jo krijo të ri
         adminRepository.findByEmail(email).orElseGet(() -> {
             AdminEntity newAdmin = AdminEntity.builder()
-                    .personalNumber("1234567890")
+                    .personalNumber("1234567891")
                     .name("Adonit")
                     .surname("Halili")
                     .gender(GenderEnum.MALE)

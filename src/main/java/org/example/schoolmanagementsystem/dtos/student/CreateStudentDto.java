@@ -35,7 +35,7 @@ public class CreateStudentDto extends UserDto {
     private String guardianName;
 
     @NotBlank(message = "Guardian phone number is required")
-    @Size(min = 10, max = 20)
+
     private String guardianPhoneNumber;
 
     @Email(message = "Invalid guardian email")

@@ -19,4 +19,8 @@ public interface SubjectRepository extends JpaRepository<SubjectEntity, Long> {
     List<SubjectEntity> findAllByTeachersContaining(TeacherEntity teacher);
 
 
+    @Query("SELECT DISTINCT c FROM SubjectEntity s JOIN s.classNumber c")
+    List<Integer> findDistinctClassNumbers();
+
+
 }

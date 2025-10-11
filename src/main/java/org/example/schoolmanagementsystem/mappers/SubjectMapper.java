@@ -1,6 +1,5 @@
 package org.example.schoolmanagementsystem.mappers;
 
-import jdk.jfr.Name;
 import org.example.schoolmanagementsystem.dtos.subject.*;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
@@ -13,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubjectDto> {
+
 
     // Single subject to listing DTO
     @Named("toListingDto")
@@ -84,9 +84,6 @@ public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubject
                 .map(StudentEntity::getId)
                 .collect(Collectors.toList());
     }
-
-
-
 
 
 }

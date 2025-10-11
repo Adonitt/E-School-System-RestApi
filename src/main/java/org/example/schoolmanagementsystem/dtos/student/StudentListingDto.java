@@ -26,4 +26,6 @@ public class StudentListingDto {
 
     private int classNumber;
 
+    private boolean active;
+
 }

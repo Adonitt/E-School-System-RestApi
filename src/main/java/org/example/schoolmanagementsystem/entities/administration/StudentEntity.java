@@ -87,6 +87,4 @@ public class StudentEntity extends UserBaseInfo {
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
     private List<SubjectEntity> subjects;
-
-
 }

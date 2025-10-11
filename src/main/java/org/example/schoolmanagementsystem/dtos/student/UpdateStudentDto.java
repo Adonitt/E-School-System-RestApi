@@ -46,7 +46,6 @@ public class UpdateStudentDto {
     private String postalCode;
 
     @NotBlank(message = "Phone number is required")
-    @Size(min = 10, max = 20, message = "Phone number must be between 10 and 20 characters")
     private String phoneNumber;
 
     private String notes;
@@ -68,7 +67,6 @@ public class UpdateStudentDto {
     private String guardianName;
 
     @NotBlank(message = "Guardian phone number is required")
-    @Size(min = 10, max = 20, message = "Guardian phone number must be between 10 and 20 characters")
     private String guardianPhoneNumber;
 
     @NotBlank(message = "Guardian email is required")

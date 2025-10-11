@@ -158,8 +158,9 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("New password and confirm password do not match");
         }
 
+
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        emailService.sendChangePasswordNotification(user);
+//        emailService.sendChangePasswordNotification(user);
 
         saveUser(user);
     }

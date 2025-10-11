@@ -1,10 +1,8 @@
 package org.example.schoolmanagementsystem.services.impls;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.schoolmanagementsystem.dtos.student.StudentDetailsDto;
 import org.example.schoolmanagementsystem.dtos.subject.CreateSubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
 import org.example.schoolmanagementsystem.dtos.subject.UpdateSubjectDto;
@@ -17,10 +15,10 @@ import org.example.schoolmanagementsystem.repositories.StudentRepository;
 import org.example.schoolmanagementsystem.repositories.SubjectRepository;
 import org.example.schoolmanagementsystem.repositories.TeacherRepository;
 import org.example.schoolmanagementsystem.services.interfaces.SubjectService;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -92,14 +90,14 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public List<SubjectDto> findAll() {
-        return subjectRepository.findAll().stream().map(subjectMapper::toListingDto).toList();
+        var subjects = subjectRepository.findAll();
+        return subjectMapper.toListingDtoList(subjects);
     }
 
     @Override
     public SubjectDto findById(Long id) {
         SubjectEntity subject = subjectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Subject not found with id " + id));
         return subjectMapper.toDetailsDto(subject);
-
     }
 
     @Override
@@ -117,6 +115,7 @@ public class SubjectServiceImpl implements SubjectService {
         }
 
         subjectFromDb.setTeachers(teachers);
+
         for (TeacherEntity newTeacher : teachers) {
             if (newTeacher.getSubjects() == null) {
                 newTeacher.setSubjects(new ArrayList<>());
@@ -167,17 +166,20 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public void removeById(Long id) {
-        SubjectEntity subject = subjectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Subject with id " + id + " not found"));
+        SubjectEntity subject = subjectRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Subject with id " + id + " not found"));
 
-        List<TeacherEntity> teachers = subject.getTeachers();
-        if (teachers != null) {
-            for (TeacherEntity teacher : teachers) {
-                teacher.getSubjects().remove(subject);
-                teacherRepository.save(teacher);
-            }
+        if (subject.getTeachers() != null) {
+            subject.getTeachers().forEach(teacher -> teacher.getSubjects().remove(subject));
         }
+
+        if (subject.getStudents() != null) {
+            subject.getStudents().forEach(student -> student.getSubjects().remove(subject));
+        }
+
         subjectRepository.delete(subject);
     }
+
 
 
     public List<SubjectDto> findBySemester(SemesterEnum semester) {
@@ -185,6 +187,12 @@ public class SubjectServiceImpl implements SubjectService {
         return subjects.stream().map(subjectMapper::toListingDto).collect(Collectors.toList());
     }
 
+    public List<Integer> getAllClassNumbers() {
+        Set<Integer> classNumbers = new HashSet<>();
+        classNumbers.addAll(subjectRepository.findDistinctClassNumbers());
+        classNumbers.addAll(studentRepository.findDistinctClassNumbers());
+        return new ArrayList<>(classNumbers);
+    }
 
 }
 

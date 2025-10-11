@@ -31,14 +31,14 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CreateStudentDto> create(@Valid @RequestPart("dto") CreateStudentDto dto,
-                                                   @RequestPart(value = "photo", required = false) MultipartFile photo) {
+    public ResponseEntity<CreateStudentDto> create(@Valid @RequestPart("dto") CreateStudentDto dto, @RequestPart(value = "photo", required = false) MultipartFile photo) {
         return ResponseEntity.ok(service.create(dto, photo));
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<UpdateStudentDto> modify(@PathVariable Long id, @Valid @RequestPart("dto") UpdateStudentDto dto,
-                                                   @RequestPart(value = "photo",required = false) MultipartFile photo) {
+    public ResponseEntity<UpdateStudentDto> modify(@PathVariable Long id,
+                                                   @Valid @RequestPart("dto") UpdateStudentDto dto,
+                                                   @RequestPart(value = "photo", required = false) MultipartFile photo) {
         return ResponseEntity.ok(service.modify(id, dto, photo));
     }
 
@@ -57,5 +57,16 @@ public class StudentController {
     public ResponseEntity<List<StudentDetailsDto>> getStudentsByClass(@PathVariable int classNumber) {
         return ResponseEntity.ok(service.getStudentsByClass(classNumber));
     }
+
+    @PostMapping("/deactivate-student/{id}")
+    public ResponseEntity<String> deactivateStudent(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deactivateStudent(id));
+    }
+
+    @PostMapping("/activate-student/{id}")
+    public ResponseEntity<String> activateStudent(@PathVariable Long id) {
+        return ResponseEntity.ok(service.activateStudent(id));
+    }
+
 
 }
