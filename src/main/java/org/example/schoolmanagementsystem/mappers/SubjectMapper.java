@@ -1,11 +1,16 @@
 package org.example.schoolmanagementsystem.mappers;
 
-import org.example.schoolmanagementsystem.dtos.subject.*;
+import org.example.schoolmanagementsystem.dtos.subject.CreateSubjectDto;
+import org.example.schoolmanagementsystem.dtos.subject.SubjectDto;
+import org.example.schoolmanagementsystem.dtos.subject.UpdateSubjectDto;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.example.schoolmanagementsystem.enums.SemesterEnum;
-import org.mapstruct.*;
+import org.mapstruct.IterableMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +32,10 @@ public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubject
     // Single subject to details DTO
     @Mapping(target = "teacherNames", expression = "java(mapTeacherNames(subject.getTeachers()))")
     @Mapping(target = "students", expression = "java(mapStudentsToIds(subject.getStudents()))")
+    @Mapping(target = "teacherIds", expression = "java(mapTeacherEntitiesToIds(subject.getTeachers()))")
+    @Mapping(target = "studentNames", expression = "java(mapStudentNames(subject.getStudents()))")
+    // <--- kjo
+
     SubjectDto toDetailsDto(SubjectEntity subject);
 
     @Mapping(target = "name", source = "name")
@@ -38,6 +47,7 @@ public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubject
     SubjectEntity fromCreateDto(CreateSubjectDto dto);
 
     @Mapping(target = "semester", source = "semester")
+    @Mapping(target = "teachers", expression = "java(mapTeacherEntitiesToIds(subject.getTeachers()))")
     UpdateSubjectDto toUpdateDto(SubjectEntity subject);
 
     @Mapping(target = "teachers", ignore = true)
@@ -74,6 +84,13 @@ public interface SubjectMapper extends SimpleMapper<SubjectEntity, CreateSubject
                         throw new RuntimeException("Invalid semester enum value: " + s, e);
                     }
                 })
+                .collect(Collectors.toList());
+    }
+
+    default List<String> mapStudentNames(List<StudentEntity> students) {
+        if (students == null) return null;
+        return students.stream()
+                .map(s -> s.getName() + " " + s.getSurname())
                 .collect(Collectors.toList());
     }
 

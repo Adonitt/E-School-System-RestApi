@@ -57,11 +57,13 @@ public class TeacherDetailsDto {
     private int yearsOfExperience;
 
 
-
     private LocalDate employmentDate;
 
     private QualificationEnum qualification;
 
     private List<Long> subjectIds;
+
+    private List<String> subjectNames;
+
 
 }

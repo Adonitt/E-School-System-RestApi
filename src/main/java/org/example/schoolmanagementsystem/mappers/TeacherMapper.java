@@ -9,16 +9,17 @@ import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.springframework.context.annotation.Primary;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Mapper(componentModel = "spring")
 public interface TeacherMapper extends SimpleMapper<TeacherEntity, CreateTeacherDto> {
 
     List<TeacherListingDto> toListingDto(List<TeacherEntity> entity);
 
     @Mapping(target = "subjectIds", source = "subjects", qualifiedByName = "mapSubjectIds")
+    @Mapping(target = "subjectNames", source = "subjects", qualifiedByName = "mapSubjectNames")
     TeacherDetailsDto toDetailsDto(TeacherEntity entity);
 
     UpdateTeacherDto toUpdateDto(TeacherEntity entity);
@@ -33,4 +34,14 @@ public interface TeacherMapper extends SimpleMapper<TeacherEntity, CreateTeacher
                 .map(SubjectEntity::getId)
                 .collect(Collectors.toList());
     }
+
+    @Named("mapSubjectNames")
+    default List<String> mapSubjectNames(List<SubjectEntity> subjects) {
+        if (subjects == null) return null;
+        return subjects.stream()
+                .map(SubjectEntity::getName)
+                .collect(Collectors.toList());
+    }
+
+
 }

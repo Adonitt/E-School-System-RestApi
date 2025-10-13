@@ -32,6 +32,7 @@ public interface StudentMapper extends SimpleMapper<StudentEntity, CreateStudent
     @Mapping(target = "attendanceRecordIds", expression = "java(mapAttendanceIds(entity.getAttendanceRecords()))")
     @Mapping(target = "gradeIds", expression = "java(mapGradeIds(entity.getGrades()))")
     @Mapping(target = "subjectIds", expression = "java(mapSubjectsToIds(entity.getSubjects()))")
+    @Mapping(target = "subjectNames", expression = "java(mapSubjectsToNames(entity.getSubjects()))")
     StudentDetailsDto toDetailsDto(StudentEntity entity);
 
     // Metoda ndihmëse për marre id-të nga attendance
@@ -39,6 +40,13 @@ public interface StudentMapper extends SimpleMapper<StudentEntity, CreateStudent
         if (attendanceRecords == null) return null;
         return attendanceRecords.stream()
                 .map(AttendanceEntity::getId)
+                .collect(Collectors.toList());
+    }
+
+    default List<String> mapSubjectsToNames(List<SubjectEntity> subjects) {
+        if (subjects == null) return null;
+        return subjects.stream()
+                .map(SubjectEntity::getName)
                 .collect(Collectors.toList());
     }
 

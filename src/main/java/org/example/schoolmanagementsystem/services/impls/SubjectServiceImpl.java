@@ -102,13 +102,13 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public UpdateSubjectDto modify(Long id, UpdateSubjectDto dto) {
-        SubjectEntity subjectFromDb = subjectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Subject not found with id " + id));
+        SubjectEntity subjectFromDb = subjectRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Subject not found with id " + id));
 
         List<TeacherEntity> teachers = teacherRepository.findAllById(dto.getTeachers());
         if (teachers.isEmpty()) {
             throw new EntityNotFoundException("Teachers not found for given IDs");
         }
-        subjectFromDb.setTeachers(teachers);
 
         for (TeacherEntity oldTeacher : subjectFromDb.getTeachers()) {
             oldTeacher.getSubjects().remove(subjectFromDb);
@@ -179,7 +179,6 @@ public class SubjectServiceImpl implements SubjectService {
 
         subjectRepository.delete(subject);
     }
-
 
 
     public List<SubjectDto> findBySemester(SemesterEnum semester) {

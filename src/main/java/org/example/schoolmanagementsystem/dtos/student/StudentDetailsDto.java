@@ -86,4 +86,6 @@ public class StudentDetailsDto {
 
     private List<Long> subjectIds;
 
+    private List<String> subjectNames;
+
 }

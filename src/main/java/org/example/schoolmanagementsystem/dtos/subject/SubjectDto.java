@@ -18,11 +18,12 @@ public class SubjectDto {
     private String description;
 
     private List<String> teacherNames;
+    private List<Long> teacherIds;
 
     private int credits;
     private int totalHours;
     private List<SemesterEnum> semester;
     private List<Integer> classNumber;
     private List<Long> students;
-
+    private List<String> studentNames;
 }

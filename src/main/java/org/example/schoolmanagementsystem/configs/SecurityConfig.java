@@ -91,12 +91,12 @@ public class SecurityConfig {
                                                  StudentRepository studentRepository,
                                                  PasswordEncoder passwordEncoder) {
 
-        String email = "adonit.halili@teacher.com";
+        String email = "adonit.halili@admin.com";
 
         // Kontrollo nëse admin ekziston, nëse jo krijo të ri
         adminRepository.findByEmail(email).orElseGet(() -> {
             AdminEntity newAdmin = AdminEntity.builder()
-                    .personalNumber("1234567891")
+                    .personalNumber("1252334056")
                     .name("Adonit")
                     .surname("Halili")
                     .gender(GenderEnum.MALE)
@@ -106,7 +106,7 @@ public class SecurityConfig {
                     .country(CountryEnum.KOSOVO)
                     .postalCode("10000")
                     .phoneNumber("+38344123456")
-                    .role(RoleEnum.TEACHER)
+                    .role(RoleEnum.ADMINISTRATOR)
                     .notes("Initial system admin")
                     .email(email)
                     .password(passwordEncoder.encode("Admin1234."))
