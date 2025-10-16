@@ -8,6 +8,7 @@ import org.example.schoolmanagementsystem.entities.AttendanceEntity;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.exceptions.AttendanceAlreadyExistsException;
+import org.example.schoolmanagementsystem.exceptions.StudentNotActiveException;
 import org.example.schoolmanagementsystem.mappers.AttendanceMapper;
 import org.example.schoolmanagementsystem.repositories.AttendanceRepository;
 import org.example.schoolmanagementsystem.repositories.StudentRepository;
@@ -39,10 +40,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         SubjectEntity subject = subjectRepository.findById(dto.getSubjectId()).orElseThrow(() -> new EntityNotFoundException("Subject not found"));
 
+        if (!student.isActive()){
+            throw new StudentNotActiveException("Student is not active");
+        }
+
         AttendanceEntity attendance = new AttendanceEntity();
         attendance.setStudent(student);
         attendance.setSubject(subject);
-        attendance.setDate(LocalDate.now());
+        attendance.setDate(dto.getDate() != null ? dto.getDate() : LocalDate.now());
         attendance.setPresent(dto.getPresent());
         attendance.setNotes(dto.getNotes());
 

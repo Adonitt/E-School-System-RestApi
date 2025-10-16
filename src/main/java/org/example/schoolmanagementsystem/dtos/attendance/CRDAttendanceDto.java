@@ -24,4 +24,6 @@ public class CRDAttendanceDto {
     private Boolean present;
 
     private String notes;
+
+    private LocalDate date;
 }

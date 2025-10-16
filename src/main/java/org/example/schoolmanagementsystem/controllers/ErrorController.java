@@ -81,6 +81,11 @@ public class ErrorController {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(StudentNotActiveException.class)
+    public ResponseEntity<ErrorResponse> handleStudentNotActiveException(StudentNotActiveException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status) {
         ErrorResponse error = new ErrorResponse();
         error.setMessage(message);
