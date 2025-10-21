@@ -11,8 +11,8 @@ import org.example.schoolmanagementsystem.enums.SemesterEnum;
 @NoArgsConstructor
 public class UpdateGradeDto {
     private Long id;
-    private Long studentId;
     private GradeEnum grade;
-    private String academicYear;
     private Double attendancePercentageUsed;
+    private SemesterEnum semester;
+    private String studentName;
 }

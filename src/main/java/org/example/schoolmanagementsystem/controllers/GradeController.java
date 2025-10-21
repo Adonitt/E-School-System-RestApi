@@ -60,6 +60,11 @@ public class GradeController {
         return ResponseEntity.ok(gradeService.groupBySubject());
     }
 
+    @GetMapping("/by-subject/{id}")
+    public ResponseEntity<List<CRDGradeDto>> getBySubjectId(@PathVariable Long id) {
+        return ResponseEntity.ok(gradeService.findBySubjectId(id));
+    }
+
     @GetMapping("/group-by-academic-year")
     public ResponseEntity<Map<String, List<CRDGradeDto>>> groupByAcademicYear() {
         return ResponseEntity.ok(gradeService.groupByAcademicYear());

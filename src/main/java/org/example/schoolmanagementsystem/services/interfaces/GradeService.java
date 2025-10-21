@@ -24,5 +24,7 @@ public interface GradeService extends
     Map<String, List<CRDGradeDto>> groupByStudent();
 
     Map<String, List<CRDGradeDto>> groupByTeacher();
+    List<CRDGradeDto> findBySubjectId(Long subjectId);
+
 
 }

@@ -17,8 +17,12 @@ public class CRDGradeDto {
     @NotNull(message = "Student ID is required")
     private Long studentId;
 
+    private String studentName;
+
     @NotNull(message = "Subject ID is required")
     private Long subjectId;
+
+    private String subjectName;
 
     @NotNull(message = "Grade is required")
     private GradeEnum grade;
@@ -28,6 +32,8 @@ public class CRDGradeDto {
     private SemesterEnum semester;
 
     private String teacher;
+
+    private Long teacherId;
 
     private Double attendancePercentageUsed;
 
