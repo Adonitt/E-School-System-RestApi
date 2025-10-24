@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.example.schoolmanagementsystem.enums.GradeEnum;
 import org.example.schoolmanagementsystem.enums.SemesterEnum;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,5 +38,8 @@ public class CRDGradeDto {
     private Long teacherId;
 
     private Double attendancePercentageUsed;
+
+    private LocalDate dateGiven;
+
 
 }
