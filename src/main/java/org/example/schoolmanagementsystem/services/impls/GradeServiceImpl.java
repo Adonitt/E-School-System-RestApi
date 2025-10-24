@@ -10,6 +10,7 @@ import org.example.schoolmanagementsystem.entities.GradeEntity;
 import org.example.schoolmanagementsystem.entities.SubjectEntity;
 import org.example.schoolmanagementsystem.entities.administration.StudentEntity;
 import org.example.schoolmanagementsystem.entities.administration.TeacherEntity;
+import org.example.schoolmanagementsystem.enums.GradeEnum;
 import org.example.schoolmanagementsystem.enums.SemesterEnum;
 import org.example.schoolmanagementsystem.exceptions.NotTheRightTeacherException;
 import org.example.schoolmanagementsystem.exceptions.StudentHasAlreadyANote;
@@ -82,10 +83,10 @@ public class GradeServiceImpl implements GradeService {
 
         grade.setAttendancePercentageUsed(usedAttendance);
 
-//        if (dto.getGrade() == GradeEnum.FIVE) {
-//            emailService.sendReexaminationNotificationDueToGrade(student, subject, student.getAcademicYear(), student.getCurrentSemester(), grade.getGrade());
-//            grade.setGrade(GradeEnum.FIVE);
-//        }
+        if (dto.getGrade() == GradeEnum.FIVE) {
+            emailService.sendReexaminationNotificationDueToGrade(student, subject, student.getAcademicYear(), student.getCurrentSemester(), grade.getGrade());
+            grade.setGrade(GradeEnum.FIVE);
+        }
 
         var savedGrade = gradeRepository.save(grade);
 //        emailService.sendGradeNotification(student, savedGrade);
@@ -120,10 +121,10 @@ public class GradeServiceImpl implements GradeService {
         grade.setAttendancePercentageUsed(usedAttendance);
         grade.setSemester(dto.getSemester());
 
-//        if (dto.getGrade() == GradeEnum.FIVE) {
-//            emailService.sendReexaminationNotificationDueToGrade(grade.getStudent(), grade.getSubject(), grade.getStudent().getAcademicYear(), grade.getStudent().getCurrentSemester(), grade.getGrade());
-//            grade.setGrade(GradeEnum.FIVE);
-//        }
+        if (dto.getGrade() == GradeEnum.FIVE) {
+            emailService.sendReexaminationNotificationDueToGrade(grade.getStudent(), grade.getSubject(), grade.getStudent().getAcademicYear(), grade.getStudent().getCurrentSemester(), grade.getGrade());
+            grade.setGrade(GradeEnum.FIVE);
+        }
 
         var savedGrade = gradeRepository.save(grade);
 //        emailService.sendGradeUpdateNotification(grade.getStudent(), savedGrade);

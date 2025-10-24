@@ -71,8 +71,8 @@ public class TeacherServiceImpl implements TeacherService {
             teacher.setPhoto(filename);
         }
 
-//        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
-//        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
+        emailService.sendWelcomeEmail(dto.getEmail(), dto.getName() + " " + dto.getSurname(), String.valueOf(dto.getRole()), dto.getEmail());
+        emailService.sendPasswordChangeEmail(dto.getEmail(), dto.getName(), dto.getPassword());
 
         var savedEntity = repository.save(teacher);
         return mapper.toDto(savedEntity);
